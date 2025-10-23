@@ -1,0 +1,48 @@
+/**
+ * Feeds Tab Styles (Stub)
+ */
+
+.stub-card {
+  margin: 20px;
+}
+
+.stub-content {
+  text-align: center;
+  padding: 60px 20px;
+  color: #666;
+
+  .stub-icon {
+    font-size: 64px;
+    width: 64px;
+    height: 64px;
+    color: #ccc;
+    margin-bottom: 20px;
+  }
+
+  h3 {
+    font-size: 24px;
+    margin-bottom: 12px;
+    color: #333;
+  }
+
+  p {
+    font-size: 16px;
+    margin-bottom: 8px;
+  }
+
+  .stub-note {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    font-size: 14px;
+    color: #999;
+    margin-top: 20px;
+
+    mat-icon {
+      font-size: 18px;
+      width: 18px;
+      height: 18px;
+    }
+  }
+}

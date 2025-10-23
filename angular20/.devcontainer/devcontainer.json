@@ -1,0 +1,43 @@
+{
+  "name": "Angular 20 Demo with Amp",
+  "dockerComposeFile": "podman-compose.yml",
+  "service": "angular20-dev",
+  "workspaceFolder": "/workspace/project-angular-migration/angular20",
+  
+  "initializeCommand": "powershell -ExecutionPolicy Bypass -File ${localWorkspaceFolder}/../setup-network.ps1",
+  
+  // This is still correct. The Dockerfile will switch to this user.
+  "remoteUser": "pwuser",
+
+  "customizations": {
+    "vscode": {
+      "extensions": [
+        "sourcegraph.amp",
+        "angular.ng-template",
+        "dbaeumer.vscode-eslint",
+        "esbenp.prettier-vscode",
+        "ms-vscode.vscode-typescript-next",
+        "bierner.markdown-mermaid",
+        "ms-playwright.playwright"
+      ],
+      "settings": {
+        "terminal.integrated.defaultProfile.linux": "bash",
+        "amp.anthropic.thinking.enabled": true,
+        "amp.todos.enabled": true,
+        "amp.tab.enabled": false
+      }
+    }
+  },
+  
+  "forwardPorts": [4200],
+  "portsAttributes": {
+    "4200": {
+      "label": "Angular Dev Server"
+    }
+  },
+   
+  // The postCreateCommand is now much simpler, as global tools are built into the image.
+  // This command runs as 'pwuser' and does not require sudo.
+  "postCreateCommand": "npm install"
+}
+

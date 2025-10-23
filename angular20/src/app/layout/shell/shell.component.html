@@ -1,0 +1,19 @@
+<app-header></app-header>
+
+<mat-sidenav-container class="sidenav-container">
+  @if (showSidebar) {
+    <mat-sidenav mode="side" opened>
+      <app-sidebar></app-sidebar>
+    </mat-sidenav>
+  }
+  
+  <mat-sidenav-content>
+    <div class="content-wrapper">
+      <router-outlet></router-outlet>
+    </div>
+    
+    <footer class="app-footer">
+      <p>&copy; 2025 ERP System</p>
+    </footer>
+  </mat-sidenav-content>
+</mat-sidenav-container>

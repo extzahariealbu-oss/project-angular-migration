@@ -1,0 +1,188 @@
+<!-- 
+  Billing Tab Template
+  Evidence: /angularjs2/app/views/company/billing.html:1-242
+-->
+
+<div class="billing-tab">
+  <!-- Section 1: Account Parameters (Evidence L20-105) -->
+  <mat-card class="parameters-section">
+    <mat-card-header>
+      <mat-card-title>Paramètres de Facturation</mat-card-title>
+    </mat-card-header>
+    <mat-card-content>
+      <form [formGroup]="form" class="billing-form">
+        <div class="form-row">
+          <!-- Left Column (Evidence L31-65) -->
+          <div class="form-column">
+            <!-- Customer Account Code (Evidence L34, shown only if isCustomer) -->
+            <mat-form-field appearance="outline" *ngIf="showCustomerAccount()">
+              <mat-label>Code Compte Client</mat-label>
+              <input matInput 
+                     formControlName="customerAccount" 
+                     [readonly]="!canEdit()"
+                     maxlength="10" />
+              <mat-hint>Max 10 caractères</mat-hint>
+              <mat-error *ngIf="form.get('customerAccount')?.hasError('maxlength')">
+                Maximum 10 caractères
+              </mat-error>
+            </mat-form-field>
+
+            <!-- Supplier Account Code (Evidence L39, shown if isSupplier or isSubcontractor) -->
+            <mat-form-field appearance="outline" *ngIf="showSupplierAccount()">
+              <mat-label>Code Compte Fournisseur</mat-label>
+              <input matInput 
+                     formControlName="supplierAccount" 
+                     [readonly]="!canEdit()"
+                     maxlength="10" />
+              <mat-hint>Max 10 caractères</mat-hint>
+              <mat-error *ngIf="form.get('supplierAccount')?.hasError('maxlength')">
+                Maximum 10 caractères
+              </mat-error>
+            </mat-form-field>
+
+            <!-- VAT Intra-community ID (Evidence L44) -->
+            <mat-form-field appearance="outline">
+              <mat-label>N° TVA Intracommunautaire</mat-label>
+              <input matInput formControlName="idprof6" [readonly]="!canEdit()" />
+              <mat-hint>Numéro de TVA européen</mat-hint>
+            </mat-form-field>
+
+            <!-- VAT Used Checkbox (Evidence L57) -->
+            <div class="checkbox-field">
+              <mat-checkbox formControlName="VATIsUsed" [disabled]="!canEdit()">
+                TVA Utilisée
+              </mat-checkbox>
+            </div>
+          </div>
+
+          <!-- Right Column (Evidence L67-100) -->
+          <div class="form-column">
+            <!-- Payment Conditions (Evidence L70) -->
+            <mat-form-field appearance="outline">
+              <mat-label>Conditions de Règlement</mat-label>
+              <mat-select formControlName="cond_reglement" [disabled]="!canEdit()">
+                <mat-option [value]="null">-- Sélectionner --</mat-option>
+                <mat-option *ngFor="let term of paymentTerms()" [value]="term.id">
+                  {{ term.label }}
+                </mat-option>
+              </mat-select>
+            </mat-form-field>
+
+            <!-- Payment Mode (Evidence L75) -->
+            <mat-form-field appearance="outline">
+              <mat-label>Mode de Règlement</mat-label>
+              <mat-select formControlName="mode_reglement" [disabled]="!canEdit()">
+                <mat-option [value]="null">-- Sélectionner --</mat-option>
+                <mat-option *ngFor="let mode of paymentModes()" [value]="mode.id">
+                  {{ mode.label }}
+                </mat-option>
+              </mat-select>
+            </mat-form-field>
+
+            <!-- Payment Bank (Evidence L80) -->
+            <mat-form-field appearance="outline">
+              <mat-label>Banque de Règlement</mat-label>
+              <mat-select formControlName="bank_reglement" [disabled]="!canEdit()">
+                <mat-option [value]="null">-- Sélectionner --</mat-option>
+                <mat-option *ngFor="let bank of banks()" [value]="bank._id">
+                  {{ bank.ref }}
+                </mat-option>
+              </mat-select>
+            </mat-form-field>
+
+            <!-- Bank Name (Evidence L87) -->
+            <mat-form-field appearance="outline">
+              <mat-label>Nom de la Banque</mat-label>
+              <input matInput formControlName="bankName" [readonly]="!canEdit()" />
+            </mat-form-field>
+
+            <!-- IBAN (Evidence L92) -->
+            <mat-form-field appearance="outline">
+              <mat-label>IBAN</mat-label>
+              <input matInput formControlName="iban" [readonly]="!canEdit()" />
+              <mat-hint>Format: FRXX XXXX XXXX XXXX XXXX XXXX XXX</mat-hint>
+            </mat-form-field>
+
+            <!-- BIC/SWIFT (Evidence L97) -->
+            <mat-form-field appearance="outline">
+              <mat-label>BIC/SWIFT</mat-label>
+              <input matInput formControlName="bic" [readonly]="!canEdit()" />
+              <mat-hint>Code international de la banque</mat-hint>
+            </mat-form-field>
+          </div>
+        </div>
+
+        <!-- Form Actions -->
+        <div class="form-actions" *ngIf="canEdit()">
+          <button mat-raised-button color="primary" (click)="handleSave()" [disabled]="!form.valid">
+            <mat-icon>save</mat-icon>
+            Enregistrer
+          </button>
+          <button mat-button (click)="handleCancel()">
+            Annuler
+          </button>
+        </div>
+      </form>
+    </mat-card-content>
+  </mat-card>
+
+  <!-- Section 2: Summary Statistics - COMMENTED OUT (Evidence L107-153) -->
+  <!-- Not implemented: commented out in reference app -->
+
+  <!-- Section 3: Invoice/Payment Tables (Evidence L158-239) -->
+  <mat-card class="tables-section">
+    <mat-card-header>
+      <mat-card-title>Factures et Paiements</mat-card-title>
+    </mat-card-header>
+    <mat-card-content>
+      <!-- Three-tab interface (Evidence L158-239) -->
+      <mat-tab-group>
+        <!-- Tab 1: Customer Bills (Evidence L162-164) -->
+        <mat-tab label="Factures Clients" *ngIf="organization().salesPurchases?.isCustomer">
+          <div class="tab-content">
+            <p class="placeholder-text">
+              <mat-icon>receipt</mat-icon>
+              Liste des factures clients (à implémenter)
+            </p>
+            <!-- TODO: Include BillListController equivalent -->
+          </div>
+        </mat-tab>
+
+        <!-- Tab 2: Supplier Bills (Evidence L166-168) -->
+        <mat-tab label="Factures Fournisseurs" 
+                 *ngIf="organization().salesPurchases?.isSupplier || organization().salesPurchases?.isSubcontractor">
+          <div class="tab-content">
+            <p class="placeholder-text">
+              <mat-icon>shopping_cart</mat-icon>
+              Liste des factures fournisseurs (à implémenter)
+            </p>
+            <!-- TODO: Include BillListController equivalent with forSales: 0 -->
+          </div>
+        </mat-tab>
+
+        <!-- Tab 3: Invoice Payments (Evidence L169-236) -->
+        <mat-tab label="Paiements">
+          <div class="tab-content">
+            <!-- Actions (Evidence L173-177) -->
+            <div class="table-actions">
+              <button mat-raised-button color="primary" (click)="addPayment()" [disabled]="!canEdit()">
+                <mat-icon>add</mat-icon>
+                Ajouter un Paiement
+              </button>
+              <button mat-icon-button (click)="refreshPayments()">
+                <mat-icon>refresh</mat-icon>
+              </button>
+            </div>
+
+            <p class="placeholder-text">
+              <mat-icon>payment</mat-icon>
+              Tableau des paiements (à implémenter)
+            </p>
+            <!-- TODO: Implement PaymentController equivalent with columns:
+                 Date, Piece, Journal, Account, Ref, Libelle, Debit, Credit -->
+          </div>
+        </mat-tab>
+      </mat-tab-group>
+    </mat-card-content>
+  </mat-card>
+</div>

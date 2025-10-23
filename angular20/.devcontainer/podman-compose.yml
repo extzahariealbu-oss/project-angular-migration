@@ -1,0 +1,26 @@
+services:
+  angular20-dev:
+    # We now build our custom image using the Dockerfile.
+    build:
+      context: .
+      dockerfile: Dockerfile
+    
+    # The 'image' key is removed.
+    
+    volumes:
+      - ../../../:/workspace:cached
+    command: sleep infinity
+    ports:
+      - "4200:4200"
+    networks:
+      - app-network
+    env_file:
+      - ../../.env
+    environment:
+      - NODE_ENV=development
+
+networks:
+  app-network:
+    external: true
+    name: project-angular-migration_app-network
+

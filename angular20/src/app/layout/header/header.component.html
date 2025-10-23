@@ -1,0 +1,13 @@
+<mat-toolbar color="primary">
+  <span>ERP System</span>
+  
+  <span class="spacer"></span>
+  
+  @if (authService.isAuthenticated()) {
+    <span class="user-name">{{ authService.currentUser()?.firstname || authService.currentUser()?.username }}</span>
+    <button mat-button (click)="logout()">
+      <mat-icon>logout</mat-icon>
+      Logout
+    </button>
+  }
+</mat-toolbar>

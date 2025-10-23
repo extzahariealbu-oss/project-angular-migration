@@ -1,0 +1,38 @@
+.organizations-list-page {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  
+  mat-toolbar {
+    background-color: #fff;
+    border-bottom: 1px solid #e0e0e0;
+    
+    .spacer {
+      flex: 1 1 auto;
+    }
+    
+    button {
+      margin-left: 8px;
+      
+      mat-icon {
+        margin-right: 4px;
+      }
+    }
+  }
+}
+
+@media print {
+  .organizations-list-page {
+    mat-toolbar,
+    app-organizations-filters {
+      display: none !important;
+    }
+  }
+  
+  ::ng-deep {
+    .actions-column,
+    .select-column {
+      display: none !important;
+    }
+  }
+}

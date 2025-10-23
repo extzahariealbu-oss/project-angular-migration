@@ -1,0 +1,161 @@
+.product-list-container {
+  padding: 20px;
+  width: 100%;
+  box-sizing: border-box;
+}
+
+.toolbar {
+  margin-bottom: 20px;
+
+  .toolbar-left, .toolbar-right {
+    display: flex;
+    gap: 10px;
+    align-items: center;
+  }
+
+  .spacer {
+    flex: 1;
+  }
+}
+
+.content-wrapper {
+  display: flex;
+  gap: 20px;
+}
+
+.filters-sidebar {
+  width: 250px;
+  background: white;
+  padding: 20px;
+  border-radius: 4px;
+  box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+  flex-shrink: 0;
+
+  .filter-field {
+    width: 100%;
+    margin-bottom: 16px;
+  }
+
+  .filter-group {
+    margin-bottom: 20px;
+
+    label {
+      display: block;
+      margin-bottom: 8px;
+      font-weight: 500;
+      font-size: 14px;
+    }
+
+    mat-checkbox {
+      display: block;
+      margin-bottom: 8px;
+    }
+  }
+
+  .filter-actions {
+    margin-top: 20px;
+
+    button {
+      width: 100%;
+    }
+  }
+}
+
+.main-content {
+  flex: 1;
+  min-width: 0;
+}
+
+.table-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 16px 0;
+  font-weight: 500;
+}
+
+.table-container {
+  overflow-x: auto;
+  background: white;
+  border-radius: 4px;
+  box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+  margin-bottom: 16px;
+}
+
+.product-table {
+  width: 100%;
+
+  .mat-mdc-header-cell {
+    font-weight: 600;
+    background: #f8f9fa;
+  }
+
+  .clickable-row {
+    cursor: pointer;
+
+    &:hover {
+      background: #f8f9fa;
+    }
+  }
+
+  .loading-message, .empty-message {
+    padding: 40px;
+    text-align: center;
+    color: #999;
+  }
+}
+
+.product-thumbnail {
+  width: 40px;
+  height: 40px;
+  object-fit: cover;
+  border-radius: 4px;
+}
+
+.progress-bar {
+  width: 60px;
+  height: 8px;
+  background: #e0e0e0;
+  border-radius: 4px;
+  overflow: hidden;
+}
+
+.progress-fill {
+  height: 100%;
+  background: #4caf50;
+  transition: width 0.3s ease;
+}
+
+.status-label {
+  padding: 4px 8px;
+  border-radius: 4px;
+  font-size: 12px;
+  font-weight: 500;
+  display: inline-block;
+
+  &.SELL {
+    background: #e3f2fd;
+    color: #1976d2;
+  }
+
+  &.APPROVED {
+    background: #e8f5e9;
+    color: #388e3c;
+  }
+
+  &.DRAFT {
+    background: #fff3e0;
+    color: #f57c00;
+  }
+
+  &.default {
+    background: #f5f5f5;
+    color: #757575;
+  }
+}
+
+mat-paginator {
+  background: white;
+  border-radius: 4px;
+  box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+}

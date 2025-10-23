@@ -1,0 +1,186 @@
+<!-- 
+  Addresses Tab Template
+  Evidence: /angularjs2/app/views/company/addresses.html:1-149
+-->
+
+<div class="addresses-tab">
+  <!-- Section 1: Contacts List (Evidence L11-55, shown only for Company type) -->
+  <mat-card class="contacts-section" *ngIf="isCompanyType()">
+    <mat-card-header>
+      <mat-card-title>
+        Contacts
+        <span class="badge" [matBadge]="contacts().length" matBadgeColor="primary"></span>
+      </mat-card-title>
+      <div class="header-actions">
+        <button mat-raised-button color="primary" (click)="handleAddContact()" [disabled]="!canEdit()">
+          <mat-icon>add</mat-icon>
+          Ajouter
+        </button>
+        <button mat-icon-button (click)="handleRefreshContacts()">
+          <mat-icon>refresh</mat-icon>
+        </button>
+      </div>
+    </mat-card-header>
+    <mat-card-content>
+      <!-- 4-column card grid (Evidence L21-54) -->
+      <div class="contacts-grid" *ngIf="contacts().length > 0; else noContacts">
+        <div *ngFor="let contact of contacts()" class="contact-card">
+          <div class="contact-header">
+            <a [routerLink]="['/contacts', contact._id]" class="contact-name">
+              {{ contact.civility }} {{ contact.firstName }} {{ contact.lastName }}
+            </a>
+            <button mat-icon-button 
+                    (click)="handleDeleteContact(contact._id)" 
+                    [disabled]="!canEdit()"
+                    class="delete-btn">
+              <mat-icon>delete</mat-icon>
+            </button>
+          </div>
+          <div class="contact-details">
+            <div *ngIf="contact.phone" class="detail-row">
+              <mat-icon>phone</mat-icon>
+              <span>{{ contact.phone }}</span>
+            </div>
+            <div *ngIf="contact.mobile" class="detail-row">
+              <mat-icon>smartphone</mat-icon>
+              <span>{{ contact.mobile }}</span>
+            </div>
+            <div *ngIf="contact.email" class="detail-row">
+              <mat-icon>email</mat-icon>
+              <a [href]="'mailto:' + contact.email">{{ contact.email }}</a>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <ng-template #noContacts>
+        <p class="placeholder-text">
+          <mat-icon>person</mat-icon>
+          Aucun contact (à implémenter avec ContactController)
+        </p>
+      </ng-template>
+    </mat-card-content>
+  </mat-card>
+
+  <!-- Section 2: Delivery Addresses (Evidence L59-147) -->
+  <mat-card class="addresses-section">
+    <mat-card-header>
+      <mat-card-title>
+        Adresses de Livraison
+        <span class="badge" [matBadge]="addresses().length" matBadgeColor="primary"></span>
+      </mat-card-title>
+      <div class="header-actions">
+        <button mat-raised-button color="primary" (click)="handleAddAddress()" [disabled]="!canEdit()">
+          <mat-icon>add</mat-icon>
+          Ajouter
+        </button>
+        <button mat-icon-button (click)="handleRefreshAddresses()">
+          <mat-icon>refresh</mat-icon>
+        </button>
+      </div>
+    </mat-card-header>
+    <mat-card-content>
+      <!-- Address Table (Evidence L104-144) -->
+      <div class="table-container" *ngIf="addresses().length > 0; else noAddresses">
+        <table mat-table [dataSource]="addresses()" class="addresses-table">
+          <!-- Default Column -->
+          <ng-container matColumnDef="default">
+            <th mat-header-cell *matHeaderCellDef>Défaut</th>
+            <td mat-cell *matCellDef="let address; let i = index">
+              <mat-radio-button 
+                [checked]="i === 0"
+                (change)="handleSetDefaultAddress(address.name || '')"
+                [disabled]="!canEdit()">
+              </mat-radio-button>
+            </td>
+          </ng-container>
+
+          <!-- Name Column -->
+          <ng-container matColumnDef="name">
+            <th mat-header-cell *matHeaderCellDef>Nom</th>
+            <td mat-cell *matCellDef="let address">{{ address.name }}</td>
+          </ng-container>
+
+          <!-- Address Column -->
+          <ng-container matColumnDef="address">
+            <th mat-header-cell *matHeaderCellDef>Adresse</th>
+            <td mat-cell *matCellDef="let address">
+              <pre class="address-text">{{ address.street }}</pre>
+            </td>
+          </ng-container>
+
+          <!-- Zip Column -->
+          <ng-container matColumnDef="zip">
+            <th mat-header-cell *matHeaderCellDef>Code Postal</th>
+            <td mat-cell *matCellDef="let address">{{ address.zip }}</td>
+          </ng-container>
+
+          <!-- Town Column -->
+          <ng-container matColumnDef="town">
+            <th mat-header-cell *matHeaderCellDef>Ville</th>
+            <td mat-cell *matCellDef="let address">{{ address.city }}</td>
+          </ng-container>
+
+          <!-- Status Column -->
+          <ng-container matColumnDef="status">
+            <th mat-header-cell *matHeaderCellDef>Statut</th>
+            <td mat-cell *matCellDef="let address">
+              <span class="status-badge" [class.enabled]="address.Status === 'ENABLE'">
+                {{ address.Status || 'ENABLE' }}
+              </span>
+            </td>
+          </ng-container>
+
+          <!-- Contact Column -->
+          <ng-container matColumnDef="contact">
+            <th mat-header-cell *matHeaderCellDef>Contact</th>
+            <td mat-cell *matCellDef="let address">{{ address.contact?.name }}</td>
+          </ng-container>
+
+          <!-- Phone Column -->
+          <ng-container matColumnDef="phone">
+            <th mat-header-cell *matHeaderCellDef>Téléphone</th>
+            <td mat-cell *matCellDef="let address">{{ address.contact?.phone }}</td>
+          </ng-container>
+
+          <!-- Email Column -->
+          <ng-container matColumnDef="email">
+            <th mat-header-cell *matHeaderCellDef>Email</th>
+            <td mat-cell *matCellDef="let address">
+              <a *ngIf="address.contact?.email" [href]="'mailto:' + address.contact?.email">
+                {{ address.contact?.email }}
+              </a>
+            </td>
+          </ng-container>
+
+          <!-- Actions Column -->
+          <ng-container matColumnDef="actions">
+            <th mat-header-cell *matHeaderCellDef>Actions</th>
+            <td mat-cell *matCellDef="let address; let i = index">
+              <button mat-icon-button 
+                      (click)="handleEditAddress(address)" 
+                      [disabled]="!canEdit()">
+                <mat-icon>edit</mat-icon>
+              </button>
+              <button mat-icon-button 
+                      (click)="handleDeleteAddress(address.name || '', i === 0)" 
+                      [disabled]="!canEdit()">
+                <mat-icon>delete</mat-icon>
+              </button>
+            </td>
+          </ng-container>
+
+          <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+          <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
+        </table>
+      </div>
+
+      <ng-template #noAddresses>
+        <p class="placeholder-text">
+          <mat-icon>location_on</mat-icon>
+          Aucune adresse (à charger depuis organization.addresses)
+        </p>
+      </ng-template>
+    </mat-card-content>
+  </mat-card>
+</div>

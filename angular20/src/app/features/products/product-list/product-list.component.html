@@ -1,0 +1,265 @@
+<!-- Evidence: /angularjs2/app/views/product/list.html -->
+<div class="product-list-container">
+  <!-- Toolbar -->
+  <mat-toolbar color="primary" class="toolbar">
+    <div class="toolbar-left">
+      <button mat-button [matMenuTriggerFor]="toolsMenu">
+        <mat-icon>build</mat-icon>
+        Tools
+      </button>
+      <mat-menu #toolsMenu="matMenu">
+        <!-- Evidence: list.html:25-27 -->
+        <button mat-menu-item (click)="printList()">
+          <mat-icon>print</mat-icon>
+          <span>Print List</span>
+        </button>
+        <!-- Evidence: list.html:29-31 -->
+        <button mat-menu-item (click)="refreshAllProducts()">
+          <mat-icon>refresh</mat-icon>
+          <span>Force Refresh</span>
+        </button>
+        <!-- Evidence: list.html:34-36 -->
+        <button mat-menu-item (click)="exportToExcel()">
+          <mat-icon>file_download</mat-icon>
+          <span>Export XLS</span>
+        </button>
+      </mat-menu>
+    </div>
+    <span class="spacer"></span>
+    <div class="toolbar-right">
+      <!-- Evidence: list.html:63 -->
+      <button mat-raised-button color="accent" (click)="createProduct()">
+        <mat-icon>add</mat-icon>
+        Add Product
+      </button>
+      <!-- Evidence: list.html:64 -->
+      <button mat-icon-button (click)="find(true)">
+        <mat-icon>refresh</mat-icon>
+      </button>
+    </div>
+  </mat-toolbar>
+
+  <div class="content-wrapper">
+    <!-- Filters Sidebar -->
+    <div class="filters-sidebar">
+      <!-- Evidence: list.html:78-81 -->
+      <mat-form-field appearance="outline" class="filter-field">
+        <mat-label>Quick Search</mat-label>
+        <input 
+          matInput
+          [(ngModel)]="filters.quickSearch" 
+          (ngModelChange)="onQuickSearchChange()"
+          placeholder="Search...">
+        <mat-icon matSuffix>search</mat-icon>
+      </mat-form-field>
+
+      <!-- Evidence: list.html:85-88 -->
+      <mat-form-field appearance="outline" class="filter-field">
+        <mat-label>Product Family</mat-label>
+        <mat-select [(ngModel)]="filters.sellFamily" (selectionChange)="onFilterChange()">
+          <mat-option [value]="null">All Families</mat-option>
+          <mat-option *ngFor="let family of sellFamilies()" [value]="family._id">
+            {{ family.langs?.[0]?.name || family._id }}
+          </mat-option>
+        </mat-select>
+      </mat-form-field>
+
+      <!-- Evidence: list.html:95-98 -->
+      <mat-form-field appearance="outline" class="filter-field">
+        <mat-label>Status</mat-label>
+        <mat-select [(ngModel)]="filters.status" (selectionChange)="onFilterChange()">
+          <mat-option [value]="null">All Statuses</mat-option>
+          <mat-option *ngFor="let status of statusOptions()" [value]="status.id">
+            {{ status.label }}
+          </mat-option>
+        </mat-select>
+      </mat-form-field>
+
+      <!-- Evidence: list.html:106-155 -->
+      <div class="filter-group">
+        <mat-checkbox 
+          [(ngModel)]="filters.isActive" 
+          (change)="onFilterChange()">
+          Active Only
+        </mat-checkbox>
+      </div>
+
+      <div class="filter-group">
+        <label>For Sale</label>
+        <mat-checkbox 
+          [(ngModel)]="filters.isSell.yes" 
+          (change)="onFilterChange()">
+          Yes
+        </mat-checkbox>
+        <mat-checkbox 
+          [(ngModel)]="filters.isSell.no" 
+          (change)="onFilterChange()">
+          No
+        </mat-checkbox>
+      </div>
+
+      <div class="filter-group">
+        <label>For Purchase</label>
+        <mat-checkbox 
+          [(ngModel)]="filters.isBuy.yes" 
+          (change)="onFilterChange()">
+          Yes
+        </mat-checkbox>
+        <mat-checkbox 
+          [(ngModel)]="filters.isBuy.no" 
+          (change)="onFilterChange()">
+          No
+        </mat-checkbox>
+      </div>
+
+      <!-- Evidence: list.html:187-190 -->
+      <div class="filter-actions">
+        <button mat-stroked-button (click)="resetFilter()">
+          <mat-icon>clear</mat-icon>
+          Reset
+        </button>
+      </div>
+    </div>
+
+    <!-- Main Content -->
+    <div class="main-content">
+      <div class="table-header">
+        <span>Total: {{ total() }} products</span>
+      </div>
+
+      <!-- Evidence: list.html:240-283 -->
+      <div class="table-container">
+        <table mat-table [dataSource]="dataSource" matSort class="product-table">
+          <!-- Checkbox Column -->
+          <ng-container matColumnDef="select">
+            <th mat-header-cell *matHeaderCellDef>
+              <mat-checkbox
+                (change)="$event ? toggleAllRows() : null"
+                [checked]="selection.hasValue() && isAllSelected()"
+                [indeterminate]="selection.hasValue() && !isAllSelected()"
+                [aria-label]="checkboxLabel()">
+              </mat-checkbox>
+            </th>
+            <td mat-cell *matCellDef="let row">
+              <mat-checkbox
+                (click)="$event.stopPropagation()"
+                (change)="$event ? selection.toggle(row) : null"
+                [checked]="selection.isSelected(row)"
+                [aria-label]="checkboxLabel(row)">
+              </mat-checkbox>
+            </td>
+          </ng-container>
+
+          <!-- Image Column -->
+          <ng-container matColumnDef="image">
+            <th mat-header-cell *matHeaderCellDef>Image</th>
+            <td mat-cell *matCellDef="let product">
+              <img 
+                [src]="getProductImageUrl(product)" 
+                alt="Product image" 
+                class="product-thumbnail">
+            </td>
+          </ng-container>
+
+          <!-- SKU Column -->
+          <ng-container matColumnDef="sku">
+            <th mat-header-cell *matHeaderCellDef mat-sort-header>SKU</th>
+            <td mat-cell *matCellDef="let product">{{ product.info?.SKU }}</td>
+          </ng-container>
+
+          <!-- Type Column -->
+          <ng-container matColumnDef="type">
+            <th mat-header-cell *matHeaderCellDef>Type</th>
+            <td mat-cell *matCellDef="let product">{{ getProductTypeName(product) }}</td>
+          </ng-container>
+
+          <!-- Name Column -->
+          <ng-container matColumnDef="name">
+            <th mat-header-cell *matHeaderCellDef>Name</th>
+            <td mat-cell *matCellDef="let product">{{ getProductName(product) }}</td>
+          </ng-container>
+
+          <!-- Sell Price Column -->
+          <ng-container matColumnDef="sellPrice">
+            <th mat-header-cell *matHeaderCellDef mat-sort-header>Sell Price</th>
+            <td mat-cell *matCellDef="let product">{{ product.prices?.pu_ht | number:'1.2-2' }}</td>
+          </ng-container>
+
+          <!-- Buy Cost Column -->
+          <ng-container matColumnDef="buyCost">
+            <th mat-header-cell *matHeaderCellDef mat-sort-header>Buy Cost</th>
+            <td mat-cell *matCellDef="let product">{{ product.directCost | number:'1.2-2' }}</td>
+          </ng-container>
+
+          <!-- Weight Column -->
+          <ng-container matColumnDef="weight">
+            <th mat-header-cell *matHeaderCellDef mat-sort-header>Weight</th>
+            <td mat-cell *matCellDef="let product">{{ product.weight }}</td>
+          </ng-container>
+
+          <!-- Updated Column -->
+          <ng-container matColumnDef="updated">
+            <th mat-header-cell *matHeaderCellDef mat-sort-header>Updated</th>
+            <td mat-cell *matCellDef="let product">{{ product.updatedAt | date:'short' }}</td>
+          </ng-container>
+
+          <!-- Rating Column -->
+          <ng-container matColumnDef="rating">
+            <th mat-header-cell *matHeaderCellDef mat-sort-header>Rating</th>
+            <td mat-cell *matCellDef="let product">
+              <div class="progress-bar">
+                <div class="progress-fill" [style.width]="getRatingWidth(product)"></div>
+              </div>
+            </td>
+          </ng-container>
+
+          <!-- Status Column -->
+          <ng-container matColumnDef="status">
+            <th mat-header-cell *matHeaderCellDef>Status</th>
+            <td mat-cell *matCellDef="let product">
+              <span 
+                class="status-label" 
+                [ngClass]="getStatusLabel(product).css">
+                {{ getStatusLabel(product).name }}
+              </span>
+            </td>
+          </ng-container>
+
+          <!-- Family Column -->
+          <ng-container matColumnDef="family">
+            <th mat-header-cell *matHeaderCellDef>Family</th>
+            <td mat-cell *matCellDef="let product">{{ getFamilyName(product) }}</td>
+          </ng-container>
+
+          <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+          <tr 
+            mat-row 
+            *matRowDef="let row; columns: displayedColumns;"
+            (click)="navigateToDetail(row._id!)"
+            class="clickable-row">
+          </tr>
+
+          <!-- Loading Row -->
+          <tr class="mat-row" *matNoDataRow>
+            <td class="mat-cell" [attr.colspan]="displayedColumns.length">
+              <div *ngIf="loading()" class="loading-message">Loading...</div>
+              <div *ngIf="!loading() && dataSource.data.length === 0" class="empty-message">
+                No products found
+              </div>
+            </td>
+          </tr>
+        </table>
+      </div>
+
+      <!-- Paginator -->
+      <mat-paginator 
+        [length]="total()"
+        [pageSize]="limit()"
+        [pageSizeOptions]="[25, 50, 100]"
+        [pageIndex]="page() - 1"
+        (page)="onPageChange($event.pageIndex + 1)"
+        showFirstLastButtons>
+      </mat-paginator>
+    </div>
+  </div>
+</div>

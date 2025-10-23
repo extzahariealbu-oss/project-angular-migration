@@ -1,0 +1,57 @@
+mat-card.dashboard-stat {
+  margin-bottom: 0;
+
+  mat-card-content {
+    display: flex;
+    padding: 0;
+
+    .visual {
+      width: 80px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+
+      i {
+        font-size: 48px;
+        opacity: 0.8;
+      }
+    }
+
+    .details {
+      flex: 1;
+      padding-left: 15px;
+
+      .number {
+        font-size: 32px;
+        font-weight: 300;
+        margin-bottom: 5px;
+      }
+
+      .desc {
+        font-size: 16px;
+        text-transform: uppercase;
+        opacity: 0.8;
+      }
+    }
+  }
+
+  &.green-haze {
+    background-color: #44b6ae;
+    color: #ffffff;
+  }
+
+  &.blue-madison {
+    background-color: #578ebe;
+    color: #ffffff;
+  }
+
+  &.purple-plum {
+    background-color: #8775a7;
+    color: #ffffff;
+  }
+
+  &.red-intense {
+    background-color: #e7505a;
+    color: #ffffff;
+  }
+}

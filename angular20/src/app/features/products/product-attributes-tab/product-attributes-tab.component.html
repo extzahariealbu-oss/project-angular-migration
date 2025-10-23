@@ -1,0 +1,150 @@
+<div class="attributes-container">
+  <mat-accordion multi>
+    <mat-expansion-panel *ngFor="let group of attributeGroups" [expanded]="true">
+      <mat-expansion-panel-header>
+        <mat-panel-title>
+          <mat-icon>category</mat-icon>
+          <span>{{ group.name }}</span>
+        </mat-panel-title>
+      </mat-expansion-panel-header>
+
+      <div class="attributes-list">
+        <div *ngFor="let attr of group.attributes" class="attribute-item">
+          
+          <!-- Date Type -->
+          <mat-form-field *ngIf="attr.mode === 'date'" appearance="outline" class="full-width">
+            <mat-label>{{ attr.langs[0].name }}</mat-label>
+            <input 
+              matInput 
+              [matDatepicker]="picker" 
+              [(ngModel)]="product.attributes[attributeMap[attr._id]].value"
+              (ngModelChange)="onAttributeChange()">
+            <mat-datepicker-toggle matIconSuffix [for]="picker"></mat-datepicker-toggle>
+            <mat-datepicker #picker></mat-datepicker>
+            <mat-icon matPrefix>calendar_today</mat-icon>
+          </mat-form-field>
+
+          <!-- Number Type -->
+          <mat-form-field *ngIf="attr.mode === 'number'" appearance="outline" class="full-width">
+            <mat-label>{{ attr.langs[0].name }}</mat-label>
+            <input 
+              matInput 
+              type="number" 
+              [(ngModel)]="product.attributes[attributeMap[attr._id]].value"
+              [min]="attr.minNumber ?? null"
+              [max]="attr.maxNumber ?? null"
+              [step]="attr.step || 1"
+              (ngModelChange)="onAttributeChange()">
+            <mat-icon matPrefix>calculate</mat-icon>
+          </mat-form-field>
+
+          <!-- Metric Type (number + unit) -->
+          <div *ngIf="attr.mode === 'metric'" class="metric-field">
+            <mat-form-field appearance="outline" class="metric-value">
+              <mat-label>{{ attr.langs[0].name }}</mat-label>
+              <input 
+                matInput 
+                type="number" 
+                [(ngModel)]="product.attributes[attributeMap[attr._id]].value"
+                [min]="attr.minNumber ?? null"
+                [max]="attr.maxNumber ?? null"
+                [step]="attr.step || 0.01"
+                (ngModelChange)="onAttributeChange()">
+              <mat-icon matPrefix>straighten</mat-icon>
+            </mat-form-field>
+            <mat-form-field appearance="outline" class="metric-unit">
+              <mat-label>Unit</mat-label>
+              <input matInput [value]="attr.metricUnit || ''" disabled>
+            </mat-form-field>
+          </div>
+
+          <!-- Text Type -->
+          <mat-form-field *ngIf="attr.mode === 'text'" appearance="outline" class="full-width">
+            <mat-label>{{ attr.langs[0].name }}</mat-label>
+            <input 
+              matInput 
+              type="text" 
+              [(ngModel)]="product.attributes[attributeMap[attr._id]].value"
+              (ngModelChange)="onAttributeChange()">
+            <mat-icon matPrefix>text_fields</mat-icon>
+          </mat-form-field>
+
+          <!-- Select Type -->
+          <mat-form-field *ngIf="attr.mode === 'select'" appearance="outline" class="full-width">
+            <mat-label>{{ attr.langs[0].name }}</mat-label>
+            <mat-select 
+              [(ngModel)]="product.attributes[attributeMap[attr._id]].options"
+              (ngModelChange)="onAttributeChange()">
+              <mat-option *ngFor="let val of attr.values" [value]="val._id">
+                {{ val.langs[0].name }}
+              </mat-option>
+            </mat-select>
+            <mat-icon matPrefix>list</mat-icon>
+          </mat-form-field>
+
+          <!-- Textarea Type -->
+          <mat-form-field *ngIf="attr.mode === 'textarea'" appearance="outline" class="full-width">
+            <mat-label>{{ attr.langs[0].name }}</mat-label>
+            <textarea 
+              matInput 
+              rows="4"
+              [(ngModel)]="product.attributes[attributeMap[attr._id]].value"
+              (ngModelChange)="onAttributeChange()"></textarea>
+            <mat-icon matPrefix>notes</mat-icon>
+          </mat-form-field>
+
+          <!-- Checkbox Type -->
+          <div *ngIf="attr.mode === 'checkbox'" class="checkbox-field">
+            <mat-checkbox 
+              [(ngModel)]="product.attributes[attributeMap[attr._id]].value"
+              (ngModelChange)="onAttributeChange()">
+              {{ attr.langs[0].name }}
+            </mat-checkbox>
+          </div>
+
+          <!-- Picture Type -->
+          <div *ngIf="attr.mode === 'picture'" class="picture-field">
+            <label class="picture-label">{{ attr.langs[0].name }}</label>
+            <div class="picture-upload">
+              <div class="picture-preview" *ngIf="product.attributes[attributeMap[attr._id]].value">
+                <img [src]="getImageUrl(product.attributes[attributeMap[attr._id]].value)" alt="Preview">
+              </div>
+              <div class="picture-preview empty" *ngIf="!product.attributes[attributeMap[attr._id]].value">
+                <mat-icon>image</mat-icon>
+                <span>No image</span>
+              </div>
+              <input 
+                type="file" 
+                accept="image/*" 
+                #fileInput
+                (change)="onFileSelected($event, attr._id)"
+                style="display: none">
+              <button mat-raised-button color="primary" (click)="fileInput.click()">
+                <mat-icon>upload</mat-icon>
+                Upload Image
+              </button>
+            </div>
+          </div>
+
+          <!-- Color Type -->
+          <div *ngIf="attr.mode === 'color'" class="color-field">
+            <label class="color-label">{{ attr.langs[0].name }}</label>
+            <div class="color-input-wrapper">
+              <input 
+                type="color" 
+                [(ngModel)]="product.attributes[attributeMap[attr._id]].value"
+                (ngModelChange)="onAttributeChange()">
+              <span class="color-value">{{ product.attributes[attributeMap[attr._id]].value }}</span>
+            </div>
+          </div>
+
+        </div>
+      </div>
+    </mat-expansion-panel>
+  </mat-accordion>
+
+  <div *ngIf="!attributeGroups || attributeGroups.length === 0" class="no-attributes">
+    <mat-icon>info</mat-icon>
+    <p>No attributes defined for this product family.</p>
+  </div>
+</div>

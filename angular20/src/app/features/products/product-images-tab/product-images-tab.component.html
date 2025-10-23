@@ -1,0 +1,192 @@
+<!-- Evidence: /angularjs2/app/views/product/images.html (lines 1-78) -->
+<div class="product-images-tab">
+  
+  <!-- File Upload Section - Evidence: gridfs/file.html:1-27 -->
+  <mat-card class="upload-card" *ngIf="productId">
+    <mat-card-header>
+      <mat-card-title>
+        <mat-icon>cloud_upload</mat-icon>
+        Upload New Images
+      </mat-card-title>
+    </mat-card-header>
+    <mat-card-content>
+      <div class="upload-area"
+           (drop)="onFileDrop($event)"
+           (dragover)="onDragOver($event)"
+           (dragleave)="onDragLeave($event)"
+           [class.drag-over]="isDragging">
+        <input
+          #fileInput
+          type="file"
+          accept="image/*"
+          multiple
+          (change)="onFileSelected($event)"
+          style="display: none;"
+        />
+        <div class="upload-content" (click)="fileInput.click()">
+          <mat-icon class="upload-icon">cloud_upload</mat-icon>
+          <p class="upload-text">Drag and drop images here or click to browse</p>
+          <p class="upload-hint">Supported: JPG, PNG, GIF</p>
+        </div>
+      </div>
+
+      <!-- Upload Queue -->
+      <div *ngIf="uploadQueue.length > 0" class="upload-queue">
+        <h3>Upload Queue ({{ uploadQueue.length }})</h3>
+        <mat-list>
+          <mat-list-item *ngFor="let item of uploadQueue; let i = index">
+            <mat-icon matListItemIcon>image</mat-icon>
+            <div matListItemTitle>{{ item.file.name }}</div>
+            <div matListItemLine>{{ formatFileSize(item.file.size / 1024 / 1024) }}</div>
+            <div matListItemMeta>
+              <button
+                mat-icon-button
+                color="warn"
+                (click)="removeFromQueue(i)"
+                [disabled]="item.uploading"
+              >
+                <mat-icon>delete</mat-icon>
+              </button>
+            </div>
+            <mat-progress-bar
+              *ngIf="item.uploading"
+              mode="indeterminate"
+              color="accent"
+            ></mat-progress-bar>
+          </mat-list-item>
+        </mat-list>
+        <div class="upload-actions">
+          <button
+            mat-raised-button
+            color="primary"
+            (click)="uploadAll()"
+            [disabled]="uploading()"
+          >
+            <mat-icon>cloud_upload</mat-icon>
+            Upload All
+          </button>
+          <button
+            mat-button
+            (click)="clearQueue()"
+            [disabled]="uploading()"
+          >
+            <mat-icon>clear_all</mat-icon>
+            Clear Queue
+          </button>
+        </div>
+      </div>
+    </mat-card-content>
+  </mat-card>
+
+  <!-- Image Bank Section - Evidence: images.html:15-78 -->
+  <mat-card class="image-bank-card">
+    <mat-card-header>
+      <mat-card-title>
+        <mat-icon>collections</mat-icon>
+        Image Bank
+      </mat-card-title>
+    </mat-card-header>
+    <mat-card-content>
+      <!-- Search Bar -->
+      <mat-form-field class="search-field" appearance="outline">
+    <mat-label>Search images</mat-label>
+    <input
+      matInput
+      [(ngModel)]="searchQuery"
+      (ngModelChange)="onSearchChange()"
+      placeholder="Search by name..."
+    />
+    <mat-icon matSuffix>search</mat-icon>
+  </mat-form-field>
+
+  <!-- Loading Spinner -->
+  <div *ngIf="loading()" class="loading-container">
+    <mat-spinner diameter="50"></mat-spinner>
+  </div>
+
+  <!-- Image Grid -->
+  <div *ngIf="!loading()" class="image-grid">
+    <mat-card
+      *ngFor="let image of images()"
+      class="image-card"
+      [class.added]="isImageAdded(image._id)"
+    >
+      <!-- Image Thumbnail with Overlay -->
+      <div class="image-container">
+        <img
+          [src]="getImageUrl(image.imageSrc, 'm')"
+          [alt]="image.langs[0]?.name || 'Product image'"
+          class="image-thumbnail"
+        />
+        <div class="image-overlay">
+          <button
+            mat-icon-button
+            class="overlay-btn"
+            (click)="openImagePreview(image)"
+            matTooltip="Preview"
+          >
+            <mat-icon>zoom_in</mat-icon>
+          </button>
+        </div>
+        
+        <!-- Added Indicator -->
+        <div *ngIf="isImageAdded(image._id)" class="added-badge">
+          <mat-icon>check_circle</mat-icon>
+          <span>Added to product</span>
+        </div>
+      </div>
+
+      <!-- Card Content -->
+      <mat-card-content>
+        <h3 class="image-name">{{ image.langs[0]?.name || 'Untitled' }}</h3>
+        <p class="image-filename">{{ image.imageSrc }}</p>
+        <p class="image-metadata">
+          {{ image.size.width }} × {{ image.size.height }} •
+          {{ formatFileSize(image.length) }}
+        </p>
+      </mat-card-content>
+
+      <!-- Card Actions -->
+      <mat-card-actions>
+        <button
+          *ngIf="!isImageAdded(image._id)"
+          mat-raised-button
+          color="primary"
+          (click)="addImageToProduct(image)"
+        >
+          <mat-icon>add</mat-icon>
+          Add to Product
+        </button>
+        <button
+          *ngIf="isImageAdded(image._id)"
+          mat-raised-button
+          color="warn"
+          (click)="removeImageFromProduct(image)"
+        >
+          <mat-icon>remove</mat-icon>
+          Remove
+        </button>
+      </mat-card-actions>
+    </mat-card>
+  </div>
+
+  <!-- Empty State -->
+  <div *ngIf="!loading() && images().length === 0" class="empty-state">
+    <mat-icon>image_not_supported</mat-icon>
+    <p>No images found</p>
+  </div>
+
+      <!-- Paginator -->
+      <mat-paginator
+        *ngIf="totalImages > 0"
+        [length]="totalImages"
+        [pageSize]="pageSize"
+        [pageIndex]="pageIndex"
+        [pageSizeOptions]="[12, 24, 48]"
+        (page)="onPageChange($event)"
+        showFirstLastButtons
+      >
+      </mat-paginator>
+    </mat-card-content>
+  </mat-card>
+</div>

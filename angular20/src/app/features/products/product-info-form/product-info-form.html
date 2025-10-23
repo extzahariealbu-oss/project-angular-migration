@@ -1,0 +1,192 @@
+<!-- Evidence: informations.html:37-278 - Product Information Form -->
+
+<form #productForm="ngForm">
+  <!-- Warning for Pack Pricing - Evidence: informations.html:672-676 -->
+  <div *ngIf="product.isPackaging && product.prices && product.prices.pu_ht! < (product.total_pack || 0)" 
+       class="alert alert-warning">
+    <strong>Warning!</strong> Sale price is lower than total pack cost.
+  </div>
+
+  <div class="row">
+    <!-- SKU Field - Evidence: informations.html:679-687 -->
+    <div class="col-md-6">
+      <mat-form-field appearance="outline" class="full-width">
+        <mat-label>SKU <span class="required">*</span></mat-label>
+        <input matInput
+               type="text" 
+               [(ngModel)]="product.info!.SKU"
+               name="sku"
+               #sku="ngModel"
+               maxlength="13"
+               required
+               (blur)="onSkuChange()" />
+        <mat-hint *ngIf="skuChecking()">
+          <mat-spinner diameter="16" style="display: inline-block; margin-right: 8px;"></mat-spinner>
+          Checking SKU...
+        </mat-hint>
+        <mat-error *ngIf="sku.invalid && sku.touched && sku.errors?.['required']">
+          SKU is required
+        </mat-error>
+        <mat-error *ngIf="!skuValid() && !skuChecking()">
+          This SKU already exists
+        </mat-error>
+      </mat-form-field>
+    </div>
+
+    <!-- Product Type - Evidence: informations.html:45-49 - Binds to product.info.productType._id -->
+    <div class="col-md-6">
+      <mat-form-field appearance="outline" class="full-width">
+        <mat-label>Type <span class="required">*</span></mat-label>
+        <mat-select [(ngModel)]="productTypeId"
+                    name="productType"
+                    #productType="ngModel"
+                    (ngModelChange)="onProductTypeChange($event)"
+                    required>
+          <mat-option [value]="null">Select Type</mat-option>
+          <mat-option *ngFor="let type of productTypes()" [value]="type._id">
+            {{ type.name }}
+          </mat-option>
+        </mat-select>
+        <mat-error *ngIf="productType.invalid && productType.touched">
+          Product type is required
+        </mat-error>
+      </mat-form-field>
+    </div>
+  </div>
+
+  <div class="row">
+    <!-- Product Family - Evidence: informations.html:53 - Binds to product.sellFamily._id -->
+    <div class="col-md-6">
+      <mat-form-field appearance="outline" class="full-width">
+        <mat-label>Family <span class="required">*</span></mat-label>
+        <mat-select [(ngModel)]="sellFamilyId"
+                    name="sellFamily"
+                    (ngModelChange)="onSellFamilyChange($event)"
+                    required>
+          <mat-option [value]="null">Select Family</mat-option>
+          <mat-option *ngFor="let family of productFamilies()" [value]="family._id">
+            {{ family.name }}
+          </mat-option>
+        </mat-select>
+      </mat-form-field>
+    </div>
+
+    <!-- Product Name - Evidence: informations.html:710-719 -->
+    <div class="col-md-6">
+      <mat-form-field appearance="outline" class="full-width">
+        <mat-label>Label <span class="required">*</span> <mat-icon style="font-size: 14px; vertical-align: middle;">flag</mat-icon></mat-label>
+        <input matInput
+               type="text" 
+               [(ngModel)]="product.info!.langs![languageIdx].name"
+               name="name"
+               #productName="ngModel"
+               required />
+        <mat-error *ngIf="productName.invalid && productName.touched">
+          Product name is required
+        </mat-error>
+      </mat-form-field>
+    </div>
+  </div>
+
+  <!-- Product Codes Section - Evidence: informations.html:736-769 -->
+  <div class="row" *ngIf="product.isProduct">
+    <div class="col-md-12">
+      <h4>Product Codes</h4>
+    </div>
+
+    <!-- EAN Code - Evidence: informations.html:738-751 -->
+    <div class="col-md-6">
+      <mat-checkbox [(ngModel)]="product.info!.autoBarCode"
+                    name="autoBarCode"
+                    style="margin-bottom: 8px;">
+        Automatic EAN Code
+      </mat-checkbox>
+      <mat-form-field appearance="outline" class="full-width">
+        <mat-label>EAN Code</mat-label>
+        <input matInput
+               type="text" 
+               [(ngModel)]="product.info!.EAN"
+               name="ean"
+               maxlength="13"
+               placeholder="EAN13"
+               [disabled]="product.info?.autoBarCode || false" />
+      </mat-form-field>
+    </div>
+
+    <!-- UPC Code - Evidence: informations.html:755-758 -->
+    <div class="col-md-6">
+      <mat-form-field appearance="outline" class="full-width">
+        <mat-label>UPC Code</mat-label>
+        <input matInput
+               type="text" 
+               [(ngModel)]="product.info!.UPC"
+               name="upc" />
+      </mat-form-field>
+    </div>
+
+    <!-- ISBN Code - Evidence: informations.html:760-763 -->
+    <div class="col-md-6">
+      <mat-form-field appearance="outline" class="full-width">
+        <mat-label>ISBN Code</mat-label>
+        <input matInput
+               type="text" 
+               [(ngModel)]="product.info!.ISBN"
+               name="isbn" />
+      </mat-form-field>
+    </div>
+
+    <!-- ACL Code - Evidence: informations.html:765-768 -->
+    <div class="col-md-6">
+      <mat-form-field appearance="outline" class="full-width">
+        <mat-label>ACL Code</mat-label>
+        <input matInput
+               type="text" 
+               [(ngModel)]="product.info!.aclCode"
+               name="aclCode" />
+      </mat-form-field>
+    </div>
+  </div>
+
+  <!-- Description - Evidence: informations.html:774-781 -->
+  <div class="row">
+    <div class="col-md-12">
+      <mat-form-field appearance="outline" class="full-width">
+        <mat-label>Description <mat-icon style="font-size: 14px; vertical-align: middle;">flag</mat-icon></mat-label>
+        <textarea matInput
+                  [(ngModel)]="product.info!.langs![languageIdx].description"
+                  name="description"
+                  rows="4"
+                  placeholder="Used in quotes, orders, and invoices"></textarea>
+      </mat-form-field>
+    </div>
+  </div>
+
+  <!-- Units and Physical Properties - Evidence: informations.html:801-834 -->
+  <div class="row">
+    <!-- Weight - Evidence: informations.html:809-816 -->
+    <div class="col-md-4" *ngIf="product.isProduct">
+      <mat-form-field appearance="outline" class="full-width">
+        <mat-label>Weight (kg)</mat-label>
+        <input matInput
+               type="number" 
+               [(ngModel)]="product.weight"
+               name="weight"
+               min="0"
+               step="0.0001" />
+      </mat-form-field>
+    </div>
+
+    <!-- Packing - Evidence: informations.html:827-834 -->
+    <div class="col-md-4" *ngIf="product.isProduct">
+      <mat-form-field appearance="outline" class="full-width">
+        <mat-label>Packing</mat-label>
+        <input matInput
+               type="number" 
+               [(ngModel)]="product.packing"
+               name="packing"
+               min="0"
+               step="1" />
+      </mat-form-field>
+    </div>
+  </div>
+</form>

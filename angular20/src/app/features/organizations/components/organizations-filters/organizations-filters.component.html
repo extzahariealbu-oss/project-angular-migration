@@ -1,0 +1,80 @@
+<mat-expansion-panel [expanded]="true" class="filters-panel">
+  <mat-expansion-panel-header>
+    <mat-panel-title>Filters</mat-panel-title>
+  </mat-expansion-panel-header>
+  
+  <form [formGroup]="form" class="filters-grid">
+    <!-- Row 1: Search and Sales Person -->
+    <mat-form-field appearance="outline">
+      <mat-label>Search</mat-label>
+      <input matInput 
+             formControlName="search" 
+             placeholder="Name, reference...">
+    </mat-form-field>
+    
+    <mat-form-field appearance="outline">
+      <mat-label>Sales Person</mat-label>
+      <input matInput 
+             formControlName="salesPerson"
+             placeholder="Enter sales person name">
+    </mat-form-field>
+    
+    <!-- Row 2: Entity and Status -->
+    <mat-form-field appearance="outline">
+      <mat-label>Entity</mat-label>
+      <mat-select formControlName="entity">
+        <mat-option value="">All</mat-option>
+        @for (entity of entityOptions; track entity) {
+          <mat-option [value]="entity">{{ entity }}</mat-option>
+        }
+      </mat-select>
+    </mat-form-field>
+    
+    <mat-form-field appearance="outline">
+      <mat-label>Status</mat-label>
+      <mat-select formControlName="status">
+        <mat-option value="">All</mat-option>
+        @for (status of statusOptions; track status) {
+          <mat-option [value]="status">{{ status }}</mat-option>
+        }
+      </mat-select>
+    </mat-form-field>
+    
+    <!-- Row 3: Type Checkboxes -->
+    <section class="checkboxes">
+      <mat-checkbox formControlName="isProspect">Prospect</mat-checkbox>
+      <mat-checkbox formControlName="isCustomer">Customer</mat-checkbox>
+      <mat-checkbox formControlName="isSupplier">Supplier</mat-checkbox>
+      <mat-checkbox formControlName="isSubcontractor">Subcontractor</mat-checkbox>
+    </section>
+    
+    <!-- Row 4: Last Order Date Range -->
+    <mat-form-field appearance="outline" class="date-range">
+      <mat-label>Last Order Date Range</mat-label>
+      <mat-date-range-input [rangePicker]="lastOrderPicker">
+        <input matStartDate formControlName="lastOrderFrom" placeholder="Start date">
+        <input matEndDate formControlName="lastOrderTo" placeholder="End date">
+      </mat-date-range-input>
+      <mat-datepicker-toggle matIconSuffix [for]="lastOrderPicker"></mat-datepicker-toggle>
+      <mat-date-range-picker #lastOrderPicker></mat-date-range-picker>
+    </mat-form-field>
+    
+    <!-- Row 5: Created Date Range -->
+    <mat-form-field appearance="outline" class="date-range">
+      <mat-label>Created Date Range</mat-label>
+      <mat-date-range-input [rangePicker]="createdPicker">
+        <input matStartDate formControlName="createdFrom" placeholder="Start date">
+        <input matEndDate formControlName="createdTo" placeholder="End date">
+      </mat-date-range-input>
+      <mat-datepicker-toggle matIconSuffix [for]="createdPicker"></mat-datepicker-toggle>
+      <mat-date-range-picker #createdPicker></mat-date-range-picker>
+    </mat-form-field>
+    
+    <!-- Clear Button -->
+    <div class="actions">
+      <button mat-raised-button color="primary" type="button" (click)="clearFilters()">
+        Clear All Filters
+      </button>
+    </div>
+  </form>
+</mat-expansion-panel>

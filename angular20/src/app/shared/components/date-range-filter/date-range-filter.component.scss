@@ -1,0 +1,11 @@
+button.date-range-button {
+  .date-text {
+    font-weight: 300;
+    text-transform: uppercase;
+    margin: 0 0.5rem;
+    
+    @media (max-width: 991px) {
+      display: none;
+    }
+  }
+}

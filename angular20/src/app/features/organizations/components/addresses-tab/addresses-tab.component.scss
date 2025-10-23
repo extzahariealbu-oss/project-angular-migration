@@ -1,0 +1,211 @@
+// Addresses Tab Styles
+// Evidence: /angularjs2/app/views/company/addresses.html styling
+
+.addresses-tab {
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+  padding: 1rem;
+}
+
+// Common card header styles
+mat-card-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 1rem;
+
+  mat-card-title {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+  }
+
+  .header-actions {
+    display: flex;
+    gap: 0.5rem;
+
+    button mat-icon {
+      margin-right: 0.5rem;
+    }
+
+    mat-icon-button mat-icon {
+      margin-right: 0;
+    }
+  }
+}
+
+// Contacts Section (Evidence: addresses.html L11-55)
+.contacts-section {
+  .contacts-grid {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 1rem;
+
+    @media (max-width: 1200px) {
+      grid-template-columns: repeat(3, 1fr);
+    }
+
+    @media (max-width: 900px) {
+      grid-template-columns: repeat(2, 1fr);
+    }
+
+    @media (max-width: 600px) {
+      grid-template-columns: 1fr;
+    }
+  }
+
+  .contact-card {
+    padding: 1rem;
+    border: 1px solid #e0e0e0;
+    border-radius: 4px;
+    background-color: #fafafa;
+    transition: box-shadow 0.2s;
+
+    &:hover {
+      box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    }
+
+    .contact-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+      margin-bottom: 0.75rem;
+
+      .contact-name {
+        font-weight: 500;
+        color: #1976d2;
+        text-decoration: none;
+        flex: 1;
+
+        &:hover {
+          text-decoration: underline;
+        }
+      }
+
+      .delete-btn {
+        mat-icon {
+          font-size: 18px;
+          width: 18px;
+          height: 18px;
+          color: #f44336;
+        }
+      }
+    }
+
+    .contact-details {
+      display: flex;
+      flex-direction: column;
+      gap: 0.5rem;
+
+      .detail-row {
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+        font-size: 0.875rem;
+
+        mat-icon {
+          font-size: 16px;
+          width: 16px;
+          height: 16px;
+          color: #757575;
+        }
+
+        a {
+          color: #1976d2;
+          text-decoration: none;
+
+          &:hover {
+            text-decoration: underline;
+          }
+        }
+      }
+    }
+  }
+}
+
+// Addresses Section (Evidence: addresses.html L59-147)
+.addresses-section {
+  .table-container {
+    overflow-x: auto;
+  }
+
+  .addresses-table {
+    width: 100%;
+    
+    th {
+      font-weight: 600;
+      color: #424242;
+    }
+
+    td {
+      vertical-align: top;
+    }
+
+    .address-text {
+      white-space: pre-wrap;
+      font-family: inherit;
+      margin: 0;
+      font-size: 0.875rem;
+      max-width: 200px;
+    }
+
+    .status-badge {
+      display: inline-block;
+      padding: 0.25rem 0.5rem;
+      border-radius: 3px;
+      font-size: 0.75rem;
+      font-weight: 500;
+      background-color: #f5f5f5;
+      color: #757575;
+
+      &.enabled {
+        background-color: #c8e6c9;
+        color: #2e7d32;
+      }
+    }
+
+    a {
+      color: #1976d2;
+      text-decoration: none;
+
+      &:hover {
+        text-decoration: underline;
+      }
+    }
+
+    button mat-icon {
+      font-size: 20px;
+      width: 20px;
+      height: 20px;
+    }
+  }
+}
+
+// Placeholder styles
+.placeholder-text {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 1rem;
+  padding: 3rem;
+  color: #757575;
+  font-size: 1rem;
+  text-align: center;
+  background-color: #fafafa;
+  border: 2px dashed #e0e0e0;
+  border-radius: 4px;
+
+  mat-icon {
+    font-size: 48px;
+    width: 48px;
+    height: 48px;
+    color: #bdbdbd;
+  }
+}
+
+// Badge styling
+.badge {
+  display: inline-flex;
+  align-items: center;
+}

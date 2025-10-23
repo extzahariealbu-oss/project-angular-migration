@@ -1,0 +1,85 @@
+/**
+ * Stats Tab Styles (Stub)
+ */
+
+.stub-card {
+  margin: 20px;
+}
+
+.stub-content {
+  text-align: center;
+  padding: 60px 20px;
+  color: #666;
+
+  .stub-icon {
+    font-size: 64px;
+    width: 64px;
+    height: 64px;
+    color: #ccc;
+    margin-bottom: 20px;
+  }
+
+  h3 {
+    font-size: 24px;
+    margin-bottom: 12px;
+    color: #333;
+  }
+
+  > p {
+    font-size: 16px;
+    margin-bottom: 20px;
+  }
+
+  .feature-list {
+    max-width: 500px;
+    margin: 30px auto;
+    text-align: left;
+    background: #f9f9f9;
+    padding: 20px;
+    border-radius: 8px;
+
+    h4 {
+      font-size: 18px;
+      margin-bottom: 12px;
+      color: #555;
+    }
+
+    ul {
+      list-style: none;
+      padding: 0;
+      margin: 0;
+
+      li {
+        display: flex;
+        align-items: center;
+        gap: 12px;
+        padding: 8px 0;
+        font-size: 15px;
+        color: #666;
+
+        mat-icon {
+          font-size: 20px;
+          width: 20px;
+          height: 20px;
+          color: #999;
+        }
+      }
+    }
+  }
+
+  .stub-note {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    font-size: 14px;
+    color: #999;
+    margin-top: 30px;
+
+    mat-icon {
+      font-size: 18px;
+      width: 18px;
+      height: 18px;
+    }
+  }
+}

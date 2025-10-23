@@ -1,0 +1,298 @@
+<!-- Evidence: .knowledge/analysis/epic-4-evidence.md Section 5.2 (company.html:1-261) -->
+
+<form [formGroup]="companyForm" class="company-info-tab">
+  <!-- Save Actions (Evidence: L16, L23) -->
+  <div class="actions-bar" *ngIf="editable">
+    <button type="button" class="btn btn-secondary" (click)="cancel()">Cancel</button>
+    <button type="button" class="btn btn-primary" (click)="save()" [disabled]="companyForm.invalid">
+      Save
+    </button>
+  </div>
+
+  <div class="row">
+    <!-- LEFT COLUMN: Entity Identity & Address (Evidence: L29-119) -->
+    <div class="col-md-6">
+      <!-- Type Selection (Evidence: L31-48) -->
+      <div class="form-group">
+        <label>Type *</label>
+        <div class="radio-group">
+          <label class="radio-inline">
+            <input type="radio" formControlName="type" value="Person" (change)="onTypeChange()" />
+            Person
+          </label>
+          <label class="radio-inline">
+            <input type="radio" formControlName="type" value="Company" (change)="onTypeChange()" />
+            Company
+          </label>
+        </div>
+      </div>
+
+      <!-- Person Fields (Evidence: L51-64) -->
+      <div *ngIf="companyForm.get('type')?.value === 'Person'">
+        <div class="form-group">
+          <label>Civility</label>
+          <select formControlName="Title" class="form-control">
+            <option value="">-- Select --</option>
+            <option *ngFor="let civility of civilityDict" [value]="civility.id">
+              {{ civility.name }}
+            </option>
+          </select>
+        </div>
+
+        <div class="form-group">
+          <label>Last Name *</label>
+          <input type="text" formControlName="name" class="form-control" />
+        </div>
+
+        <div class="form-group">
+          <label>First Name</label>
+          <input type="text" formControlName="firstname" class="form-control" />
+        </div>
+      </div>
+
+      <!-- Company Fields (Evidence: L67-70) -->
+      <div *ngIf="companyForm.get('type')?.value === 'Company'">
+        <div class="form-group">
+          <label>Company Name *</label>
+          <input type="text" formControlName="name" class="form-control" />
+        </div>
+      </div>
+
+      <!-- Common Fields (Evidence: L72-109) -->
+      <div formGroupName="salesPurchases">
+        <div class="form-group">
+          <label>Third Party ID (Ref) *</label>
+          <input
+            type="text"
+            formControlName="ref"
+            class="form-control"
+            maxlength="13"
+            (input)="checkCodeClient()"
+            placeholder="Max 13 characters"
+          />
+          <small class="form-text text-muted">
+            Required, max 13 characters. Real-time validation enabled.
+          </small>
+        </div>
+
+        <div class="form-group">
+          <label class="checkbox-inline">
+            <input type="checkbox" formControlName="isGeneric" />
+            Generic Customer
+          </label>
+          <small class="form-text text-muted">
+            Check this if the customer represents a generic entity (e.g., "Walk-in Customer")
+          </small>
+        </div>
+      </div>
+
+      <div formGroupName="companyInfo" *ngIf="companyForm.get('type')?.value === 'Company'">
+        <div class="form-group">
+          <label>Brand/Group</label>
+          <input type="text" formControlName="brand" class="form-control" />
+        </div>
+      </div>
+
+      <div class="form-group">
+        <label>Entity Selection</label>
+        <div class="checkbox-list">
+          <label class="checkbox-block" *ngFor="let entity of entityList">
+            <input
+              type="checkbox"
+              [checked]="isEntitySelected(entity.id)"
+              (change)="onEntityToggle(entity.id)"
+            />
+            {{ entity.name }}
+          </label>
+        </div>
+      </div>
+
+      <!-- Main Address (Evidence: L112-119) -->
+      <div formGroupName="address" class="form-group">
+        <label>Main Address (Billing)</label>
+        <div class="address-widget">
+          <input type="text" formControlName="street" class="form-control mb-2" placeholder="Street" />
+          <div class="row">
+            <div class="col-md-4">
+              <input type="text" formControlName="zip" class="form-control" placeholder="Zip" />
+            </div>
+            <div class="col-md-8">
+              <input type="text" formControlName="city" class="form-control" placeholder="City" />
+            </div>
+          </div>
+          <input type="text" formControlName="country" class="form-control mt-2" placeholder="Country" />
+        </div>
+      </div>
+    </div>
+
+    <!-- RIGHT COLUMN: Strategic Notes & Contact Info (Evidence: L124-254) -->
+    <div class="col-md-6">
+      <!-- Strategic Notes (Evidence: L125-162) -->
+      <div class="strategic-notes">
+        <div class="section-header">
+          <h4>Strategic Notes</h4>
+          <button
+            type="button"
+            class="btn btn-sm btn-outline-primary"
+            (click)="toggleEditNote()"
+            *ngIf="editable"
+          >
+            {{ editableInfo ? 'Cancel' : 'Add Note' }}
+          </button>
+        </div>
+
+        <!-- Add/Edit Note Form (Evidence: L137-150) -->
+        <div class="note-editor" *ngIf="editableInfo">
+          <div class="form-group">
+            <label>Status</label>
+            <select [(ngModel)]="newNote.css" [ngModelOptions]="{standalone: true}" class="form-control">
+              <option *ngFor="let status of noteStatuses" [value]="status.css">
+                {{ status.label }}
+              </option>
+            </select>
+          </div>
+          <div class="form-group">
+            <label>Note *</label>
+            <textarea
+              [(ngModel)]="newNote.note"
+              [ngModelOptions]="{standalone: true}"
+              class="form-control"
+              rows="6"
+              required
+            ></textarea>
+          </div>
+          <button type="button" class="btn btn-primary" (click)="saveNote()" [disabled]="!newNote.note.trim()">
+            Save Note
+          </button>
+        </div>
+
+        <!-- Note History (Evidence: L153-162) -->
+        <div class="note-history" *ngIf="organization.notes && organization.notes.length > 0">
+          <div class="note-item" *ngFor="let note of organization.notes; let i = index" [class]="'alert-' + note.css">
+            <div class="note-header">
+              <span class="note-author">{{ note.author }}</span>
+              <span class="note-date">{{ note.datec | date:'short' }}</span>
+              <button
+                type="button"
+                class="btn btn-sm btn-link text-danger"
+                (click)="deleteNote(i)"
+                *ngIf="editable"
+              >
+                Delete
+              </button>
+            </div>
+            <div class="note-content">{{ note.note }}</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Contact Information (Evidence: L165-213) -->
+      <div class="contact-info">
+        <h4>Contact Information</h4>
+
+        <div class="form-group">
+          <label>Language</label>
+          <select formControlName="salesPurchases_language" class="form-control">
+            <option value="">-- Select --</option>
+            <option *ngFor="let lang of languageDict" [value]="lang.id">
+              {{ lang.name }}
+            </option>
+          </select>
+        </div>
+
+        <div formGroupName="phones">
+          <div class="form-group">
+            <label>Phone</label>
+            <input type="tel" formControlName="phone" class="form-control" />
+          </div>
+
+          <div class="form-group">
+            <label>Mobile</label>
+            <input type="tel" formControlName="mobile" class="form-control" />
+          </div>
+
+          <div class="form-group">
+            <label>Fax</label>
+            <input type="tel" formControlName="fax" class="form-control" />
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label>Email</label>
+          <div class="input-group">
+            <input type="email" formControlName="emails" class="form-control" />
+            <a
+              class="btn btn-outline-secondary"
+              *ngIf="companyForm.get('emails')?.value"
+              [href]="'mailto:' + companyForm.get('emails')?.value"
+            >
+              <i class="bi bi-envelope"></i>
+            </a>
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label>Website</label>
+          <div class="input-group">
+            <input type="url" formControlName="url" class="form-control" placeholder="https://" />
+            <a
+              class="btn btn-outline-secondary"
+              *ngIf="companyForm.get('url')?.value"
+              [href]="companyForm.get('url')?.value"
+              target="_blank"
+            >
+              <i class="bi bi-box-arrow-up-right"></i>
+            </a>
+          </div>
+        </div>
+      </div>
+
+      <!-- Social Media Links (Evidence: L214-252) -->
+      <div class="social-media" formGroupName="social">
+        <h4>Social Media</h4>
+
+        <div class="form-group">
+          <label>Twitter</label>
+          <div class="input-group">
+            <input type="url" formControlName="TW" class="form-control" placeholder="http://" />
+            <button
+              type="button"
+              class="btn btn-outline-secondary"
+              *ngIf="companyForm.get('social.TW')?.value"
+            >
+              <i class="bi bi-twitter"></i>
+            </button>
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label>LinkedIn</label>
+          <div class="input-group">
+            <input type="url" formControlName="LI" class="form-control" placeholder="http://" />
+            <button
+              type="button"
+              class="btn btn-outline-secondary"
+              *ngIf="companyForm.get('social.LI')?.value"
+            >
+              <i class="bi bi-linkedin"></i>
+            </button>
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label>Facebook</label>
+          <div class="input-group">
+            <input type="url" formControlName="FB" class="form-control" placeholder="http://" />
+            <button
+              type="button"
+              class="btn btn-outline-secondary"
+              *ngIf="companyForm.get('social.FB')?.value"
+            >
+              <i class="bi bi-facebook"></i>
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</form>

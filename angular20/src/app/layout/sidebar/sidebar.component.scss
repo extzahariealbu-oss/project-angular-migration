@@ -1,0 +1,22 @@
+.menu-loading,
+.menu-error {
+  padding: 1rem 1.5rem;
+  text-align: center;
+}
+
+.menu-error {
+  color: #e74c3c;
+}
+
+mat-nav-list.submenu {
+  padding-left: 1rem;
+  background-color: rgba(0, 0, 0, 0.05);
+}
+
+.expand-icon {
+  float: right;
+  font-size: 20px;
+  width: 20px;
+  height: 20px;
+  line-height: 20px;
+}

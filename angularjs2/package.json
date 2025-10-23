@@ -1,0 +1,74 @@
+{
+  "name": "TM_CRM",
+  "version": "0.6.0",
+  "private": true,
+  "author": {
+    "name": "TM - ToManage"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/ToManage/TM-CRM_ERP.git"
+  },
+  "engines": {
+    "node": "6.6.x"
+  },
+  "contributors": [
+    "Herve Prot <herve.prot@tomanage.fr>"
+  ],
+  "license": "Apache v2",
+  "main": "./index.js",
+  "dependencies": {
+    "accounting": "0.4.1",
+    "async": "2.6.0",
+    "crypto-js": "3.1.9-1",
+    "csv": "0.3.6",
+    "fixed-width-string": "1.0.0",
+    "google-libphonenumber": "2.0.19",
+    "googleapis": "22.2.0",
+    "i18next": "10.0.7",
+    "i18next-node-fs-backend": "1.0.0",
+    "i18next-sprintf-postprocessor": "0.2.2",
+    "iban": "0.0.7",
+    "iconv-lite": "0.4.24",
+    "json2csv": "3.11.5",
+    "lodash": "3.10.1",
+    "moment": "2.19.2",
+    "mongoose": "4.9.10",
+    "mongoose-datatable": "1.0.6",
+    "mongoose-function": "0.1.0",
+    "mongoose-mpath": "1.0.1",
+    "mongoose-timestamp": "0.5.0",
+    "mongoose-version": "1.1.0",
+    "node-gyp": "3.6.2",
+    "numeral": "2.0.6",
+    "odt": "1.1.0",
+    "passport": "0.4.0",
+    "passport-google-oauth": "1.0.0",
+    "passport-local": "1.0.0",
+    "passport-localapikey": "0.0.3",
+    "passport-oauth2": "1.4.0",
+    "paypal-express-checkout": "1.6.1",
+    "q": "1.5.1",
+    "shortid": "2.2.8",
+    "symeos-mqtt": "0.1.3",
+    "total.js": "2.9.0",
+    "unzip": "0.1.11",
+    "validator": "4.2.1",
+    "xml-writer": "1.7.0",
+    "xml2js": "0.4.19",
+    "xss-filters": "1.2.7"
+  },
+  "devDependencies": {
+    "gulp": "3.9.1",
+    "gulp-header-license": "1.0.9",
+    "gulp-jsbeautifier": "2.1.1",
+    "gulp-rename": "1.2.2"
+  },
+  "scripts": {
+    "test-jshint": "jshint ./app/**/**.js",
+    "test-eslint": "eslint ./app/**/**.js",
+    "test-htmlhint": "htmlhint ./app/**/**/*.html",
+    "test-csslint": "csslint ./public/css/**.css",
+    "test-mocha": "mocha tests/"
+  }
+}

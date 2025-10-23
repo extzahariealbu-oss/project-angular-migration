@@ -1,0 +1,183 @@
+// Evidence: /angularjs2/app/views/product/images.html (lines 29-74)
+.product-images-tab {
+  padding: 24px;
+
+  .search-field {
+    width: 100%;
+    max-width: 400px;
+    margin-bottom: 24px;
+  }
+
+  .loading-container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 400px;
+  }
+
+  .image-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+    gap: 24px;
+    margin-bottom: 24px;
+
+    @media (max-width: 599px) {
+      grid-template-columns: 1fr;
+    }
+
+    @media (min-width: 600px) and (max-width: 959px) {
+      grid-template-columns: repeat(2, 1fr);
+    }
+
+    @media (min-width: 960px) and (max-width: 1279px) {
+      grid-template-columns: repeat(3, 1fr);
+    }
+
+    @media (min-width: 1280px) {
+      grid-template-columns: repeat(4, 1fr);
+    }
+  }
+
+  .image-card {
+    display: flex;
+    flex-direction: column;
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
+
+    &:hover {
+      transform: translateY(-4px);
+      box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2);
+    }
+
+    &.added {
+      border: 2px solid var(--primary-color, #1976d2);
+    }
+
+    .image-container {
+      position: relative;
+      width: 100%;
+      padding-top: 75%; // 4:3 aspect ratio
+      overflow: hidden;
+      background: #f5f5f5;
+
+      .image-thumbnail {
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+      }
+
+      .image-overlay {
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        background: rgba(0, 0, 0, 0.6);
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        opacity: 0;
+        transition: opacity 0.2s ease;
+
+        .overlay-btn {
+          color: white;
+          background: rgba(255, 255, 255, 0.2);
+          margin: 0 8px;
+
+          &:hover {
+            background: rgba(255, 255, 255, 0.3);
+          }
+        }
+      }
+
+      &:hover .image-overlay {
+        opacity: 1;
+      }
+
+      .added-badge {
+        position: absolute;
+        top: 8px;
+        right: 8px;
+        background: var(--primary-color, #1976d2);
+        color: white;
+        padding: 4px 8px;
+        border-radius: 4px;
+        display: flex;
+        align-items: center;
+        gap: 4px;
+        font-size: 12px;
+        font-weight: 500;
+
+        mat-icon {
+          font-size: 16px;
+          width: 16px;
+          height: 16px;
+        }
+      }
+    }
+
+    mat-card-content {
+      flex: 1;
+      padding: 16px;
+
+      .image-name {
+        margin: 0 0 8px 0;
+        font-size: 16px;
+        font-weight: 500;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        white-space: nowrap;
+      }
+
+      .image-filename {
+        margin: 0 0 4px 0;
+        font-size: 12px;
+        color: #666;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        white-space: nowrap;
+      }
+
+      .image-metadata {
+        margin: 0;
+        font-size: 12px;
+        color: #999;
+      }
+    }
+
+    mat-card-actions {
+      padding: 0 16px 16px;
+      margin: 0;
+
+      button {
+        width: 100%;
+      }
+    }
+  }
+
+  .empty-state {
+    text-align: center;
+    padding: 64px 24px;
+    color: #999;
+
+    mat-icon {
+      font-size: 64px;
+      width: 64px;
+      height: 64px;
+      margin-bottom: 16px;
+      opacity: 0.5;
+    }
+
+    p {
+      font-size: 18px;
+      margin: 0;
+    }
+  }
+
+  mat-paginator {
+    background: transparent;
+    margin-top: 24px;
+  }
+}

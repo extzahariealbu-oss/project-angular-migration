@@ -1,0 +1,44 @@
+{
+  "/api/login": {
+    "target": "http://host.docker.internal:8000",
+    "secure": false,
+    "changeOrigin": true,
+    "logLevel": "debug",
+    "pathRewrite": {
+      "^/api/login": "/login"
+    }
+  },
+  "/api/session": {
+    "target": "http://host.docker.internal:8000",
+    "secure": false,
+    "changeOrigin": true,
+    "logLevel": "debug",
+    "pathRewrite": {
+      "^/api/session": "/session"
+    }
+  },
+  "/api/logout": {
+    "target": "http://host.docker.internal:8000",
+    "secure": false,
+    "changeOrigin": true,
+    "logLevel": "debug",
+    "pathRewrite": {
+      "^/api/logout": "/logout"
+    }
+  },
+  "/api": {
+    "target": "http://host.docker.internal:8000",
+    "secure": false,
+    "changeOrigin": true,
+    "logLevel": "debug",
+    "pathRewrite": {
+      "^/api": "/erp/api"
+    }
+  },
+  "/erp/api": {
+    "target": "http://host.docker.internal:8000",
+    "secure": false,
+    "changeOrigin": true,
+    "logLevel": "debug"
+  }
+}

@@ -1,0 +1,49 @@
+<div class="organizations-list-page">
+  <mat-toolbar>
+    <span>Organizations ({{ dataResource()?.total ?? 0 }})</span>
+    <span class="spacer"></span>
+    
+    <button mat-raised-button color="primary" (click)="createNew()">
+      <mat-icon>add</mat-icon> Add
+    </button>
+    
+    <button mat-button (click)="exportToXLS()" [disabled]="loading()">
+      <mat-icon>download</mat-icon> Export
+    </button>
+    
+    <button mat-button (click)="print()">
+      <mat-icon>print</mat-icon> Print
+    </button>
+    
+    <button mat-button 
+            [disabled]="selection.selected.length === 0 || loading()"
+            (click)="bulkDelete()">
+      <mat-icon>delete</mat-icon> 
+      Delete
+      @if (selection.selected.length > 0) {
+        <span>({{ selection.selected.length }})</span>
+      }
+    </button>
+  </mat-toolbar>
+  
+  <app-organizations-filters
+    [value]="filtersSig()"
+    (filtersChange)="filtersSig.set($event)">
+  </app-organizations-filters>
+  
+  <app-organizations-totals
+    [totals]="null">
+  </app-organizations-totals>
+  
+  <app-organizations-table
+    [rows]="dataResource()?.data ?? []"
+    [total]="dataResource()?.total ?? 0"
+    [page]="pageSig()"
+    [sort]="sortSig()"
+    [selection]="selection"
+    [loading]="loading()"
+    (pageChange)="pageSig.set($event)"
+    (sortChange)="sortSig.set($event)"
+    (rowClick)="navigateToDetail($event)">
+  </app-organizations-table>
+</div>

@@ -1,0 +1,229 @@
+// Error Card
+.error-card {
+  max-width: 600px;
+  margin: 40px auto;
+  text-align: center;
+
+  .error-content {
+    padding: 40px 20px;
+
+    mat-icon {
+      font-size: 64px;
+      width: 64px;
+      height: 64px;
+      margin-bottom: 20px;
+    }
+
+    h2 {
+      margin: 20px 0 10px;
+      font-size: 24px;
+      font-weight: 500;
+    }
+
+    p {
+      color: #666;
+      margin-bottom: 30px;
+    }
+  }
+}
+
+.page-content {
+  padding: 20px;
+  width: 100%;
+  box-sizing: border-box;
+}
+
+.page-toolbar {
+  margin-bottom: 20px;
+
+  .breadcrumb-section {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+
+    mat-icon {
+      font-size: 16px;
+      width: 16px;
+      height: 16px;
+    }
+
+    .disabled-label {
+      color: #f44336;
+      font-weight: 500;
+    }
+  }
+
+  .spacer {
+    flex: 1;
+  }
+
+  .toolbar-actions {
+    display: flex;
+    gap: 8px;
+    align-items: center;
+  }
+}
+
+.content-layout {
+  display: flex;
+  gap: 20px;
+}
+
+.sidebar-card {
+  width: 300px;
+  flex-shrink: 0;
+  position: relative;
+
+  .ribbon {
+    position: absolute;
+    top: 10px;
+    right: -5px;
+    padding: 4px 12px;
+    color: white;
+    font-weight: bold;
+    font-size: 12px;
+    text-transform: uppercase;
+    z-index: 10;
+
+    &.status-sell {
+      background-color: #4caf50;
+    }
+
+    &.status-approved {
+      background-color: #2196f3;
+    }
+
+    &.status-draft {
+      background-color: #ff9800;
+    }
+
+    &.status-validated {
+      background-color: #9c27b0;
+    }
+  }
+
+  .product-image {
+    text-align: center;
+    margin-bottom: 16px;
+
+    img {
+      max-width: 100%;
+      height: auto;
+      border-radius: 8px;
+    }
+  }
+
+  .product-name {
+    text-align: center;
+    margin: 16px 0 8px;
+    font-size: 18px;
+    font-weight: 500;
+  }
+
+  .product-sku {
+    text-align: center;
+    text-transform: uppercase;
+    color: #666;
+    margin-bottom: 16px;
+
+    &.inactive {
+      color: #f44336;
+    }
+  }
+
+  mat-divider {
+    margin: 16px 0;
+  }
+
+  .toggle-section {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+  }
+
+  .rating-section {
+    label {
+      display: block;
+      margin-bottom: 8px;
+      font-weight: 500;
+      font-size: 14px;
+    }
+
+    mat-progress-bar {
+      margin-bottom: 8px;
+    }
+
+    .rating-value {
+      font-size: 14px;
+      color: #666;
+    }
+  }
+
+  .timestamps {
+    .timestamp-item {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      margin-bottom: 8px;
+      font-size: 12px;
+      color: #666;
+
+      mat-icon {
+        font-size: 16px;
+        width: 16px;
+        height: 16px;
+      }
+
+      small {
+        display: block;
+        font-size: 11px;
+      }
+    }
+  }
+}
+
+.main-card {
+  flex: 1;
+  min-width: 0;
+
+  mat-tab-group {
+    ::ng-deep .mat-mdc-tab-label {
+      mat-icon {
+        margin-right: 8px;
+      }
+
+      .warning-icon {
+        color: #ff9800;
+        margin-left: 8px;
+      }
+    }
+  }
+
+  .tab-content {
+    padding: 24px;
+  }
+}
+
+.loading-state {
+  text-align: center;
+  padding: 40px;
+
+  p {
+    margin-top: 16px;
+    color: #666;
+  }
+}
+
+.delete-action {
+  color: #f44336;
+}
+
+// Snackbar styling (global)
+::ng-deep .error-snackbar {
+  background-color: #f44336 !important;
+  color: white !important;
+  
+  .mat-mdc-button {
+    color: white !important;
+  }
+}

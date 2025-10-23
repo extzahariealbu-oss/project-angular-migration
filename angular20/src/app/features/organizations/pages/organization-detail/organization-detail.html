@@ -1,0 +1,268 @@
+<div class="organization-detail" *ngIf="organization() as org">
+  <!-- Alert Banner for Deleted Organizations -->
+  <mat-card *ngIf="org.isremoved" class="alert-banner error">
+    <strong>Be Careful!</strong> This company is deleted.
+  </mat-card>
+
+  <!-- Breadcrumb Navigation -->
+  <nav class="breadcrumb-nav">
+    <ol class="breadcrumb">
+      <li><a routerLink="/">Home</a></li>
+      <li>Third Parties</li>
+      <li>
+        <a *ngIf="org.type !== 'Person'" routerLink="/organizations">Customer List</a>
+        <a *ngIf="org.type === 'Person'" routerLink="/organizations">List of Contacts</a>
+      </li>
+      <li class="active">
+        <span *ngIf="org.type !== 'Person'">Company Card: {{ org.fullName }}</span>
+        <span *ngIf="org.type === 'Person'">Customer Card: {{ org.fullName }}</span>
+      </li>
+      <li>
+        <span [class.enabled]="isActive()" [class.disabled]="!isActive()">
+          {{ isActive() ? 'Enabled' : 'Disabled' }}
+        </span>
+      </li>
+    </ol>
+  </nav>
+
+  <!-- Tools Menu -->
+  <div class="page-toolbar" *ngIf="!org.isremoved">
+    <button mat-button [matMenuTriggerFor]="toolsMenu" class="tools-btn">
+      <mat-icon>build</mat-icon>
+      Tools
+      <mat-icon>arrow_drop_down</mat-icon>
+    </button>
+    <mat-menu #toolsMenu="matMenu">
+      <button mat-menu-item (click)="cloneOrganization()">
+        <mat-icon>content_copy</mat-icon>
+        <span>Clone</span>
+      </button>
+      <button mat-menu-item (click)="deleteOrganization()">
+        <mat-icon class="delete-icon">delete</mat-icon>
+        <span>Delete</span>
+      </button>
+    </mat-menu>
+  </div>
+
+  <div class="detail-container">
+    <!-- Sidebar Profile -->
+    <aside class="profile-sidebar">
+      <mat-card class="sidebar-card">
+        <!-- Status Ribbon -->
+        <div class="status-ribbon" [ngClass]="statusCss()">
+          {{ statusName() }}
+        </div>
+
+        <!-- Image & Name Section -->
+        <div class="profile-header">
+          <div class="profile-image">
+            <img src="assets/placeholder-company.png" alt="Organization" />
+          </div>
+          <div class="profile-title">
+            <h3>{{ org.fullName }}</h3>
+          </div>
+        </div>
+
+        <mat-divider></mat-divider>
+
+        <!-- Activation Checkbox -->
+        <div class="profile-checkboxes">
+          <mat-checkbox 
+            [checked]="isActive()" 
+            (change)="toggleActive()"
+            color="primary">
+            Activated
+          </mat-checkbox>
+        </div>
+
+        <mat-divider></mat-divider>
+
+        <!-- Category Checkboxes (Prospect/Customer/Supplier/Subcontractor) -->
+        <div class="category-checkboxes">
+          <div class="checkbox-row">
+            <mat-checkbox 
+              [checked]="isProspect()" 
+              (change)="toggleProspect()"
+              color="primary">
+              Prospect
+            </mat-checkbox>
+            <mat-checkbox 
+              [checked]="isCustomer()" 
+              (change)="toggleCustomer()"
+              color="primary">
+              Customer
+            </mat-checkbox>
+          </div>
+          <div class="checkbox-row">
+            <mat-checkbox 
+              [checked]="isSupplier()" 
+              (change)="toggleSupplier()"
+              color="primary">
+              Supplier
+            </mat-checkbox>
+            <mat-checkbox 
+              [checked]="isSubcontractor()" 
+              (change)="toggleSubcontractor()"
+              color="primary">
+              Subcontractor
+            </mat-checkbox>
+          </div>
+        </div>
+
+        <!-- Progress Bar -->
+        <div class="progress-section">
+          <mat-progress-bar mode="determinate" [value]="progressValue" color="warn"></mat-progress-bar>
+          <span class="progress-label">{{ progressValue }}% Complete</span>
+        </div>
+
+        <mat-divider></mat-divider>
+
+        <!-- Tab Navigation Menu -->
+        <nav class="tab-nav-menu">
+          <a 
+            mat-button 
+            *ngIf="org.type === 'Person'"
+            routerLink="person" 
+            routerLinkActive="active"
+            class="nav-item">
+            <mat-icon>info</mat-icon>
+            Information
+          </a>
+          <a 
+            mat-button 
+            *ngIf="org.type === 'Company'"
+            routerLink="company" 
+            routerLinkActive="active"
+            class="nav-item">
+            <mat-icon>info</mat-icon>
+            Information
+          </a>
+          <a 
+            mat-button 
+            routerLink="addresses" 
+            routerLinkActive="active"
+            class="nav-item">
+            <mat-icon>contact_mail</mat-icon>
+            Contacts/Addresses
+          </a>
+          <a 
+            mat-button 
+            *ngIf="showCommercialTab()"
+            routerLink="commercial" 
+            routerLinkActive="active"
+            class="nav-item">
+            <mat-icon>shopping_basket</mat-icon>
+            Commercial
+          </a>
+          <a 
+            mat-button 
+            routerLink="billing" 
+            routerLinkActive="active"
+            class="nav-item">
+            <mat-icon>credit_card</mat-icon>
+            Billing
+          </a>
+          <a 
+            mat-button 
+            routerLink="attributes" 
+            routerLinkActive="active"
+            class="nav-item">
+            <mat-icon>rate_review</mat-icon>
+            Attributes
+            <mat-icon 
+              *ngIf="org.rating?.attributes !== 1" 
+              class="warning-icon"
+              matTooltip="Rating: {{ (org.rating?.attributes || 0) * 100 }}%">
+              warning
+            </mat-icon>
+          </a>
+          <a 
+            mat-button 
+            routerLink="task" 
+            routerLinkActive="active"
+            class="nav-item">
+            <mat-icon>assignment</mat-icon>
+            Tasks
+          </a>
+          <a 
+            mat-button 
+            routerLink="files" 
+            routerLinkActive="active"
+            class="nav-item">
+            <mat-icon>attach_file</mat-icon>
+            Files
+          </a>
+          <a 
+            mat-button 
+            routerLink="feeds" 
+            routerLinkActive="active"
+            class="nav-item">
+            <mat-icon>rss_feed</mat-icon>
+            Feeds
+          </a>
+          <a 
+            mat-button 
+            routerLink="stats" 
+            routerLinkActive="active"
+            class="nav-item">
+            <mat-icon>bar_chart</mat-icon>
+            Statistics
+          </a>
+        </nav>
+
+        <mat-divider></mat-divider>
+
+        <!-- Metadata Section -->
+        <div class="metadata-section">
+          <div class="metadata-row">
+            <div class="metadata-item">
+              <mat-icon class="metadata-icon">event</mat-icon>
+              <span class="metadata-value">{{ org.createdAt | date:'dd/MM/yyyy HH:mm' }}</span>
+            </div>
+            <div class="metadata-item">
+              <mat-icon class="metadata-icon">refresh</mat-icon>
+              <span class="metadata-value">{{ org.updatedAt | date:'dd/MM/yyyy HH:mm' }}</span>
+            </div>
+          </div>
+          <div class="metadata-row">
+            <div class="metadata-item">
+              <span class="metadata-label">{{ org.createdBy?.username || 'N/A' }}</span>
+            </div>
+            <div class="metadata-item">
+              <span class="metadata-label">{{ org.editedBy?.username || 'N/A' }}</span>
+            </div>
+          </div>
+          <div class="metadata-logs">
+            <span class="logs-title">Logs</span>
+            <span class="logs-content">{{ org.history?.date | date:'dd/MM/yyyy HH:mm' }} {{ org.history?.msg }}</span>
+          </div>
+        </div>
+
+        <!-- File Upload Widget Placeholder -->
+        <div class="file-upload-section">
+          <p class="file-placeholder">File attachments will be displayed here</p>
+        </div>
+      </mat-card>
+    </aside>
+
+    <!-- Main Content Area (Tab Outlet) -->
+    <main class="profile-content">
+      <router-outlet></router-outlet>
+    </main>
+  </div>
+</div>
+
+<!-- Loading State -->
+<div *ngIf="loading()" class="loading-state">
+  <mat-progress-bar mode="indeterminate"></mat-progress-bar>
+  <p>Loading organization...</p>
+</div>
+
+<!-- Error State -->
+<mat-card *ngIf="error()" class="error-state">
+  <mat-icon class="error-icon">error</mat-icon>
+  <p>{{ error() }}</p>
+  <button mat-raised-button color="primary" (click)="loadOrganization(organization()?._id || '')">
+    Retry
+  </button>
+</mat-card>

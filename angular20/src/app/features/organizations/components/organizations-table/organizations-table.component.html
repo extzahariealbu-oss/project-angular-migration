@@ -1,0 +1,144 @@
+<div class="table-container">
+  @if (loading) {
+    <div class="loading-shade">
+      <mat-spinner diameter="50"></mat-spinner>
+    </div>
+  }
+
+  <table mat-table 
+         [dataSource]="rows" 
+         matSort 
+         [matSortActive]="sort.active" 
+         [matSortDirection]="sort.direction"
+         [trackBy]="trackById"
+         (matSortChange)="onSortChange($event)"
+         class="organizations-table">
+    
+    <!-- Select Column -->
+    <ng-container matColumnDef="select">
+      <th mat-header-cell *matHeaderCellDef class="select-column">
+        <mat-checkbox [checked]="isAllSelected()"
+                      [indeterminate]="hasSelection() && !isAllSelected()"
+                      (change)="toggleAll()">
+        </mat-checkbox>
+      </th>
+      <td mat-cell *matCellDef="let row" class="select-column">
+        <mat-checkbox [checked]="selection.isSelected(row)"
+                      (click)="$event.stopPropagation()"
+                      (change)="selection.toggle(row)">
+        </mat-checkbox>
+      </td>
+    </ng-container>
+    
+    <!-- Name Column -->
+    <ng-container matColumnDef="name">
+      <th mat-header-cell *matHeaderCellDef mat-sort-header>Name</th>
+      <td mat-cell *matCellDef="let row">
+        <a class="name-link" (click)="onRowClick(row, $event)">
+          {{ row.name ?? 'N/A' }}
+        </a>
+      </td>
+    </ng-container>
+    
+    <!-- Client Reference Column -->
+    <ng-container matColumnDef="ref">
+      <th mat-header-cell *matHeaderCellDef mat-sort-header>Reference</th>
+      <td mat-cell *matCellDef="let row">{{ getRef(row) }}</td>
+    </ng-container>
+    
+    <!-- Sales Person Column -->
+    <ng-container matColumnDef="salesPerson">
+      <th mat-header-cell *matHeaderCellDef mat-sort-header>Sales Person</th>
+      <td mat-cell *matCellDef="let row">{{ getSalesPerson(row) }}</td>
+    </ng-container>
+    
+    <!-- Zip Column -->
+    <ng-container matColumnDef="zip">
+      <th mat-header-cell *matHeaderCellDef mat-sort-header>Zip</th>
+      <td mat-cell *matCellDef="let row">{{ getZip(row) }}</td>
+    </ng-container>
+    
+    <!-- City Column -->
+    <ng-container matColumnDef="city">
+      <th mat-header-cell *matHeaderCellDef mat-sort-header>City</th>
+      <td mat-cell *matCellDef="let row">{{ getCity(row) }}</td>
+    </ng-container>
+    
+    <!-- VAT/Tax ID Column -->
+    <ng-container matColumnDef="vat">
+      <th mat-header-cell *matHeaderCellDef>VAT</th>
+      <td mat-cell *matCellDef="let row">{{ getVat(row) }}</td>
+    </ng-container>
+    
+    <!-- Last Order Column -->
+    <ng-container matColumnDef="lastOrder">
+      <th mat-header-cell *matHeaderCellDef mat-sort-header>Last Order</th>
+      <td mat-cell *matCellDef="let row">
+        @if (getLastOrder(row); as date) {
+          {{ date | date:'short' }}
+        } @else {
+          -
+        }
+      </td>
+    </ng-container>
+    
+    <!-- Created At Column -->
+    <ng-container matColumnDef="createdAt">
+      <th mat-header-cell *matHeaderCellDef mat-sort-header>Created</th>
+      <td mat-cell *matCellDef="let row">
+        {{ row.createdAt | date:'short' }}
+      </td>
+    </ng-container>
+    
+    <!-- Status Column (Customers only) -->
+    <ng-container matColumnDef="status">
+      <th mat-header-cell *matHeaderCellDef>Status</th>
+      <td mat-cell *matCellDef="let row">
+        @if (getStatus(row); as status) {
+          <span class="status-badge" [class]="'status-' + status.toLowerCase()">
+            {{ status }}
+          </span>
+        }
+      </td>
+    </ng-container>
+    
+    <!-- Type Badges Column -->
+    <ng-container matColumnDef="badges">
+      <th mat-header-cell *matHeaderCellDef>Type</th>
+      <td mat-cell *matCellDef="let row">
+        <mat-chip-set>
+          @for (badge of getBadges(row); track badge) {
+            <mat-chip [class]="'badge-' + badge.toLowerCase()">
+              {{ badge }}
+            </mat-chip>
+          }
+        </mat-chip-set>
+      </td>
+    </ng-container>
+    
+    <!-- Actions Column -->
+    <ng-container matColumnDef="actions">
+      <th mat-header-cell *matHeaderCellDef class="actions-column">Actions</th>
+      <td mat-cell *matCellDef="let row" class="actions-column">
+        <button mat-icon-button (click)="onRowClick(row, $event)" title="View">
+          <mat-icon>visibility</mat-icon>
+        </button>
+      </td>
+    </ng-container>
+    
+    <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+    <tr mat-row 
+        *matRowDef="let row; columns: displayedColumns;"
+        (click)="onRowClick(row)"
+        class="clickable-row">
+    </tr>
+  </table>
+
+  <mat-paginator [length]="total"
+                 [pageSize]="page.size"
+                 [pageIndex]="page.index"
+                 [pageSizeOptions]="[10, 25, 50, 100]"
+                 (page)="onPageChange($event)"
+                 showFirstLastButtons>
+  </mat-paginator>
+</div>

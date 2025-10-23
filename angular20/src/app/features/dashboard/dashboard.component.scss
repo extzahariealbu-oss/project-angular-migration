@@ -1,0 +1,43 @@
+// Evidence: /angularjs2/app/views/home/dashboard.html (responsive Bootstrap layout)
+.dashboard-container {
+  padding: 20px;
+  width: 100%;
+  box-sizing: border-box;
+}
+
+.dashboard-header {
+  margin-bottom: 20px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+
+  h1 {
+    margin: 0;
+    font-size: 24px;
+    font-weight: 500;
+  }
+}
+
+// Evidence: dashboard.html uses responsive col-lg-3 (4 boxes per row on large screens)
+.top-boxes-row {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+  gap: 20px;
+  margin-bottom: 20px;
+}
+
+.chart-row {
+  display: grid;
+  gap: 20px;
+}
+
+// Responsive adjustments
+@media (max-width: 768px) {
+  .dashboard-container {
+    padding: 10px;
+  }
+
+  .top-boxes-row {
+    grid-template-columns: 1fr;
+  }
+}

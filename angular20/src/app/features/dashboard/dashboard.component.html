@@ -1,0 +1,51 @@
+<!-- Evidence: /angularjs2/app/views/home/dashboard.html (responsive grid layout) -->
+<div class="dashboard-container">
+  <div class="dashboard-header">
+    <h1>Dashboard</h1>
+    <app-date-range-filter [dateRange]="dateRange()" (rangeChange)="onDateRangeChange($event)"></app-date-range-filter>
+  </div>
+
+  <!-- Evidence: dashboard.html uses row/col-* Bootstrap grid -->
+  <div class="dashboard-grid">
+    <!-- Top boxes row - EPIC-2-TASK-004 through EPIC-2-TASK-007 -->
+    <!-- Evidence: epic-2-evidence.md:122-206 (Metronic stat boxes with icons and colors) -->
+    <div class="top-boxes-row">
+      <!-- EPIC-2-TASK-004: Revenue -->
+      <app-dashboard-stat-box
+        title="Revenue"
+        [value]="revenue()"
+        icon="fa-euro"
+        colorClass="green-haze">
+      </app-dashboard-stat-box>
+
+      <!-- EPIC-2-TASK-005: Charges -->
+      <app-dashboard-stat-box
+        title="Charges"
+        [value]="charges()"
+        icon="fa-shopping-cart"
+        colorClass="blue-madison">
+      </app-dashboard-stat-box>
+
+      <!-- EPIC-2-TASK-006: Yearly Result -->
+      <app-dashboard-stat-box
+        title="Résultat de l'exercice"
+        [value]="yearlyResult()"
+        icon="fa-bar-chart-o"
+        colorClass="purple-plum">
+      </app-dashboard-stat-box>
+
+      <!-- EPIC-2-TASK-007: Penalties -->
+      <app-dashboard-stat-box
+        title="Pénalités"
+        [value]="penalties()"
+        icon="fa-exclamation-triangle"
+        colorClass="red-intense">
+      </app-dashboard-stat-box>
+    </div>
+
+    <!-- CA Graph row - EPIC-2-TASK-008 -->
+    <div class="chart-row">
+      <!-- CA Graph Component -->
+    </div>
+  </div>
+</div>

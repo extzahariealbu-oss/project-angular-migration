@@ -1,0 +1,216 @@
+<!-- 
+  Commercial Tab Template
+  Evidence: /angularjs2/app/views/company/commercial.html:1-233
+-->
+
+<div class="commercial-tab">
+  <!-- Section 1: Commercial Parameters (Evidence L21-125) -->
+  <mat-card class="parameters-section">
+    <mat-card-header>
+      <mat-card-title>Paramètres Commerciaux</mat-card-title>
+    </mat-card-header>
+    <mat-card-content>
+      <form [formGroup]="form" class="commercial-form">
+        <div class="form-row">
+          <!-- Left Column (Evidence L30-56) -->
+          <div class="form-column">
+            <!-- Sales Person (Evidence L30-39) -->
+            <mat-form-field appearance="outline">
+              <mat-label>Commercial</mat-label>
+              <mat-select formControlName="salesPerson" [disabled]="!canEdit()">
+                <mat-option [value]="null">-- Sélectionner --</mat-option>
+                <mat-option *ngFor="let emp of employees()" [value]="emp._id">
+                  {{ emp.name }}
+                </mat-option>
+              </mat-select>
+            </mat-form-field>
+
+            <!-- Customer Segmentation (Evidence L41-47) -->
+            <mat-form-field appearance="outline">
+              <mat-label>Segmentation Client</mat-label>
+              <mat-select formControlName="category" [disabled]="!canEdit()">
+                <mat-option [value]="null">-- Sélectionner --</mat-option>
+                <mat-option *ngFor="let cat of categories()" [value]="cat._id">
+                  {{ cat.name }}
+                </mat-option>
+              </mat-select>
+            </mat-form-field>
+
+            <!-- Juridical Status (Evidence L49-50) -->
+            <mat-form-field appearance="outline">
+              <mat-label>Forme Juridique</mat-label>
+              <mat-select formControlName="forme_juridique" [disabled]="!canEdit()">
+                <mat-option [value]="null">-- Sélectionner --</mat-option>
+                <mat-option *ngFor="let status of juridicalStatuses()" [value]="status.id">
+                  {{ status.label }}
+                </mat-option>
+              </mat-select>
+            </mat-form-field>
+
+            <!-- Staff Size (Evidence L52-53) -->
+            <mat-form-field appearance="outline">
+              <mat-label>Effectif</mat-label>
+              <mat-select formControlName="size" [disabled]="!canEdit()">
+                <mat-option [value]="null">-- Sélectionner --</mat-option>
+                <mat-option *ngFor="let size of staffSizes()" [value]="size.id">
+                  {{ size.label }}
+                </mat-option>
+              </mat-select>
+            </mat-form-field>
+
+            <!-- Rival/Competitor (Evidence L55-56) -->
+            <mat-form-field appearance="outline">
+              <mat-label>Concurrent</mat-label>
+              <input matInput formControlName="rival" [readonly]="!canEdit()" />
+            </mat-form-field>
+          </div>
+
+          <!-- Right Column (Evidence L58-121) -->
+          <div class="form-column">
+            <!-- Professional ID 2 (SIRET) (Evidence L60-66) -->
+            <mat-form-field appearance="outline">
+              <mat-label>SIRET</mat-label>
+              <input matInput formControlName="idprof2" [readonly]="!canEdit()" />
+              <mat-hint>Numéro SIRET (14 chiffres)</mat-hint>
+            </mat-form-field>
+
+            <!-- Professional ID 3 (APE/NAF) (Evidence L68-69) -->
+            <mat-form-field appearance="outline">
+              <mat-label>Code APE/NAF</mat-label>
+              <input matInput formControlName="idprof3" [readonly]="!canEdit()" />
+              <mat-hint>Code d'activité</mat-hint>
+            </mat-form-field>
+
+            <!-- Capital (Evidence L71-72) -->
+            <mat-form-field appearance="outline">
+              <mat-label>Capital</mat-label>
+              <input matInput formControlName="capital" [readonly]="!canEdit()" />
+              <mat-hint>Capital social</mat-hint>
+            </mat-form-field>
+
+            <!-- Price Level with Actions (Evidence L74-118) -->
+            <mat-form-field appearance="outline">
+              <mat-label>Niveau de Prix</mat-label>
+              <mat-select formControlName="priceList" [disabled]="!canEdit()">
+                <mat-option [value]="null">-- Sélectionner --</mat-option>
+                <mat-option *ngFor="let list of priceLists()" [value]="list._id">
+                  {{ list.name }}
+                </mat-option>
+              </mat-select>
+              <button mat-icon-button matSuffix [matMenuTriggerFor]="priceListMenu" type="button">
+                <mat-icon>more_vert</mat-icon>
+              </button>
+            </mat-form-field>
+
+            <!-- Price List Actions Menu (Evidence L96-118) -->
+            <mat-menu #priceListMenu="matMenu">
+              <button mat-menu-item 
+                      (click)="navigateToPriceList(form.value.priceList)"
+                      [disabled]="!form.value.priceList">
+                <mat-icon>visibility</mat-icon>
+                <span>Voir/Modifier les Prix</span>
+              </button>
+              <button mat-menu-item (click)="openNewPriceListModal()">
+                <mat-icon>add</mat-icon>
+                <span>Nouvelle Liste de Prix</span>
+              </button>
+            </mat-menu>
+          </div>
+        </div>
+
+        <!-- Form Actions -->
+        <div class="form-actions" *ngIf="canEdit()">
+          <button mat-raised-button color="primary" (click)="handleSave()" [disabled]="!form.valid">
+            <mat-icon>save</mat-icon>
+            Enregistrer
+          </button>
+          <button mat-button (click)="handleCancel()">
+            Annuler
+          </button>
+        </div>
+      </form>
+    </mat-card-content>
+  </mat-card>
+
+  <!-- Section 2: Summary Statistics - COMMENTED OUT (Evidence L128-175) -->
+  <!-- Not implemented: commented out in reference app -->
+
+  <!-- Section 3: Commercial Follow-up (Evidence L177-226) -->
+  <mat-card class="followup-section">
+    <mat-card-header>
+      <mat-card-title>Suivi Commercial</mat-card-title>
+      <button mat-icon-button *ngIf="!isEditingNotes() && canEdit()" (click)="startEditingNotes()">
+        <mat-icon>edit</mat-icon>
+      </button>
+    </mat-card-header>
+    <mat-card-content>
+      <!-- Last Modified Banner (Evidence L195-198) -->
+      <div class="alert-info" *ngIf="lastModifiedInfo()">
+        <mat-icon>info</mat-icon>
+        <span>{{ lastModifiedInfo() }}</span>
+      </div>
+
+      <!-- Edit Mode (Evidence L184-192) -->
+      <div *ngIf="isEditingNotes()" class="notes-editor">
+        <form [formGroup]="notesForm">
+          <mat-form-field appearance="outline" class="full-width">
+            <mat-label>Notes Internes</mat-label>
+            <textarea matInput 
+                      formControlName="notes" 
+                      rows="12"
+                      placeholder="Notes en format Markdown..."></textarea>
+            <mat-hint>Utilisez Markdown pour le formatage</mat-hint>
+          </mat-form-field>
+
+          <div class="editor-actions">
+            <button mat-raised-button color="primary" 
+                    (click)="saveNotes()" 
+                    [disabled]="isSavingNotes()">
+              <mat-icon>save</mat-icon>
+              {{ isSavingNotes() ? 'Enregistrement...' : 'Enregistrer' }}
+            </button>
+            <button mat-button 
+                    (click)="cancelNotesEdit()" 
+                    [disabled]="isSavingNotes()">
+              Annuler
+            </button>
+          </div>
+        </form>
+      </div>
+
+      <!-- Display Mode (Evidence L199-223) -->
+      <div *ngIf="!isEditingNotes()" class="notes-display">
+        <!-- Markdown Render (Evidence L199) -->
+        <div class="markdown-content" [innerHTML]="organization().internalNotes?.new || 'Aucune note'">
+        </div>
+
+        <!-- Quick Info Links (Evidence L203-222) -->
+        <div class="quick-info" *ngIf="organization()">
+          <!-- Website (Evidence L205-206) -->
+          <div *ngIf="organization().address?.url" class="info-item">
+            <mat-icon>language</mat-icon>
+            <a [href]="organization().address?.url" target="_blank">{{ organization().address?.url }}</a>
+          </div>
+
+          <!-- Email (Evidence L212-213) -->
+          <div *ngIf="organization().address?.email" class="info-item">
+            <mat-icon>email</mat-icon>
+            <a [href]="'mailto:' + organization().address?.email">{{ organization().address?.email }}</a>
+          </div>
+
+          <!-- Phone (Evidence L215-216) -->
+          <div *ngIf="organization().address?.phone" class="info-item">
+            <mat-icon>phone</mat-icon>
+            <span>{{ organization().address?.phone }}</span>
+          </div>
+
+          <!-- Fax (Evidence L218-219) -->
+          <div *ngIf="organization().address?.fax" class="info-item">
+            <mat-icon>print</mat-icon>
+            <span>{{ organization().address?.fax }}</span>
+          </div>
+        </div>
+      </div>
+    </mat-card-content>
+  </mat-card>
+</div>

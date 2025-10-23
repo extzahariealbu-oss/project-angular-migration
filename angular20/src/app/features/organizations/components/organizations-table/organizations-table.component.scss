@@ -1,0 +1,113 @@
+.table-container {
+  position: relative;
+  width: 100%;
+  overflow-x: auto;
+}
+
+.loading-shade {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(255, 255, 255, 0.7);
+  z-index: 10;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.organizations-table {
+  width: 100%;
+  
+  .select-column {
+    width: 60px;
+  }
+  
+  .actions-column {
+    width: 80px;
+    text-align: right;
+  }
+  
+  .clickable-row {
+    cursor: pointer;
+    
+    &:hover {
+      background-color: #f5f5f5;
+    }
+  }
+  
+  .name-link {
+    color: #1976d2;
+    text-decoration: none;
+    cursor: pointer;
+    
+    &:hover {
+      text-decoration: underline;
+    }
+  }
+  
+  .status-badge {
+    padding: 4px 8px;
+    border-radius: 4px;
+    font-size: 12px;
+    font-weight: 500;
+    
+    &.status-active {
+      background-color: #c8e6c9;
+      color: #2e7d32;
+    }
+    
+    &.status-inactive {
+      background-color: #ffcdd2;
+      color: #c62828;
+    }
+    
+    &.status-pending {
+      background-color: #fff9c4;
+      color: #f57f17;
+    }
+  }
+  
+  mat-chip-set {
+    display: flex;
+    gap: 4px;
+  }
+  
+  mat-chip {
+    font-size: 11px;
+    min-height: 24px;
+    padding: 4px 8px;
+    
+    &.badge-prospect {
+      background-color: #e3f2fd;
+      color: #1565c0;
+    }
+    
+    &.badge-customer {
+      background-color: #c8e6c9;
+      color: #2e7d32;
+    }
+    
+    &.badge-supplier {
+      background-color: #fff9c4;
+      color: #f57f17;
+    }
+    
+    &.badge-subcontractor {
+      background-color: #f3e5f5;
+      color: #6a1b9a;
+    }
+  }
+}
+
+mat-paginator {
+  border-top: 1px solid #e0e0e0;
+}
+
+@media print {
+  .select-column,
+  .actions-column {
+    display: none !important;
+  }
+}

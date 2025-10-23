@@ -1,0 +1,28 @@
+@use '@angular/material' as mat;
+
+// Define theme palette
+$primary-palette: mat.m2-define-palette(mat.$m2-blue-palette);
+$accent-palette: mat.m2-define-palette(mat.$m2-green-palette);
+$warn-palette: mat.m2-define-palette(mat.$m2-red-palette);
+
+// Create theme
+$theme: mat.m2-define-light-theme((
+  color: (
+    primary: $primary-palette,
+    accent: $accent-palette,
+    warn: $warn-palette,
+  ),
+  typography: mat.m2-define-typography-config(),
+  density: 0,
+));
+
+// Include Material core and theme
+@include mat.core();
+@include mat.all-component-themes($theme);
+
+// Global styles
+html, body {
+  height: 100%;
+  margin: 0;
+  font-family: Roboto, "Helvetica Neue", sans-serif;
+}

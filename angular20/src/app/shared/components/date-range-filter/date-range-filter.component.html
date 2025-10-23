@@ -1,0 +1,19 @@
+<button 
+  mat-stroked-button 
+  [matMenuTriggerFor]="dateMenu"
+  class="date-range-button">
+  <mat-icon>calendar_today</mat-icon>
+  <span class="date-text">
+    {{ formatDate(dateRange.start) }} - {{ formatDate(dateRange.end) }}
+  </span>
+  <mat-icon>arrow_drop_down</mat-icon>
+</button>
+
+<mat-menu #dateMenu="matMenu">
+  <button 
+    mat-menu-item
+    *ngFor="let preset of presetRanges"
+    (click)="selectPreset(preset)">
+    {{ preset.label }}
+  </button>
+</mat-menu>

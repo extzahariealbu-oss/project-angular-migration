@@ -1,0 +1,60 @@
+@if (menuLoading) {
+  <div class="menu-loading">Loading menu...</div>
+}
+
+@if (menuLoadError) {
+  <div class="menu-error">
+    <p>Failed to load menu</p>
+    <button mat-button (click)="loadMenu()">Retry</button>
+  </div>
+}
+
+@if (!menuLoading && !menuLoadError) {
+  <mat-nav-list>
+    @for (item of menuItems; track $index) {
+      @if (item.path) {
+        <a mat-list-item 
+           [routerLink]="item.path" 
+           [queryParams]="item.queryParams"
+           routerLinkActive="active"
+           [routerLinkActiveOptions]="{exact: false}">
+          @if (item.icon) {
+            <mat-icon matListItemIcon>{{ item.icon }}</mat-icon>
+          }
+          <span matListItemTitle>{{ item.name }}</span>
+        </a>
+      } @else {
+        <a mat-list-item (click)="toggleSubmenu($index)">
+          @if (item.icon) {
+            <mat-icon matListItemIcon>{{ item.icon }}</mat-icon>
+          }
+          <span matListItemTitle>
+            {{ item.name }}
+            @if (item.children && item.children.length > 0) {
+              <mat-icon class="expand-icon">{{ expandedMenus.has($index) ? 'expand_less' : 'expand_more' }}</mat-icon>
+            }
+          </span>
+        </a>
+        
+        @if (item.children && item.children.length > 0 && expandedMenus.has($index)) {
+          <mat-nav-list class="submenu">
+            @for (child of item.children; track $index) {
+              @if (child.path) {
+                <a mat-list-item 
+                   [routerLink]="child.path" 
+                   [queryParams]="child.queryParams"
+                   routerLinkActive="active"
+                   [routerLinkActiveOptions]="{exact: false}">
+                  @if (child.icon) {
+                    <mat-icon matListItemIcon>{{ child.icon }}</mat-icon>
+                  }
+                  <span matListItemTitle>{{ child.name }}</span>
+                </a>
+              }
+            }
+          </mat-nav-list>
+        }
+      }
+    }
+  </mat-nav-list>
+}

@@ -1,0 +1,35 @@
+services:
+  app:
+    build: .
+    ports:
+      - "8000:8000"
+    environment:
+      - MONGODB_URI=mongodb://mongo:27017/tomanage
+    depends_on:
+      - mongo
+    volumes:
+      - .:/app
+      - /app/node_modules
+    networks:
+      - app-network
+      
+  mongo:
+    image: mongo:3.4    # Changed from 3.6 to 3.4
+    ports:
+      - "27017:27017"
+    volumes:
+      - mongo-data:/data/db
+      - ./dump/install.tgz:/docker-entrypoint-initdb.d/install.tgz:ro
+      - ./init-mongo.sh:/docker-entrypoint-initdb.d/init-mongo.sh:ro
+    environment:
+      - MONGO_INITDB_DATABASE=tomanage
+    networks:
+      - app-network
+      
+volumes:
+  mongo-data:
+
+networks:
+  app-network:
+    external: true
+    name: project-angular-migration_app-network

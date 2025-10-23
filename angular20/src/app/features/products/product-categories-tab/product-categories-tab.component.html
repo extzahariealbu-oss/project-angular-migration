@@ -1,0 +1,89 @@
+<div class="categories-tab">
+  <!-- Toolbar -->
+  <mat-toolbar class="toolbar">
+    <button mat-raised-button (click)="expandAll()">
+      <mat-icon>unfold_more</mat-icon>
+      Expand All
+    </button>
+    <button mat-raised-button (click)="collapseAll()">
+      <mat-icon>unfold_less</mat-icon>
+      Collapse All
+    </button>
+    <button mat-raised-button (click)="refresh()">
+      <mat-icon>refresh</mat-icon>
+      Refresh
+    </button>
+  </mat-toolbar>
+
+  <!-- Category Tree -->
+  <div class="tree-container">
+    <mat-tree [dataSource]="dataSource" [treeControl]="treeControl">
+      <!-- Nested node -->
+      <mat-nested-tree-node *matTreeNodeDef="let node; when: hasChild">
+        <li>
+          <div class="tree-node" [class.selected]="isSelected(node._id)">
+            <!-- Expand/Collapse button -->
+            <button mat-icon-button matTreeNodeToggle>
+              <mat-icon>
+                {{treeControl.isExpanded(node) ? 'expand_more' : 'chevron_right'}}
+              </mat-icon>
+            </button>
+
+            <!-- Checkbox -->
+            <mat-checkbox
+              [checked]="isSelected(node._id)"
+              (change)="toggleCategory(node._id)">
+            </mat-checkbox>
+
+            <!-- Category info -->
+            <div class="category-info">
+              <div class="category-name">
+                {{ node.langs[0].name }}
+                <span class="category-linker">{{ node.langs[0].linker }}</span>
+                <span class="product-count" [matBadge]="node.productsCount" matBadgeSize="small">
+                </span>
+              </div>
+              <div class="category-description" *ngIf="node.langs[0].description">
+                {{ node.langs[0].description }}
+              </div>
+            </div>
+          </div>
+
+          <!-- Children -->
+          <ul [class.hidden]="!treeControl.isExpanded(node)">
+            <ng-container matTreeNodeOutlet></ng-container>
+          </ul>
+        </li>
+      </mat-nested-tree-node>
+
+      <!-- Leaf node -->
+      <mat-tree-node *matTreeNodeDef="let node">
+        <li>
+          <div class="tree-node" [class.selected]="isSelected(node._id)">
+            <!-- Spacer for alignment -->
+            <span class="tree-node-spacer"></span>
+
+            <!-- Checkbox -->
+            <mat-checkbox
+              [checked]="isSelected(node._id)"
+              (change)="toggleCategory(node._id)">
+            </mat-checkbox>
+
+            <!-- Category info -->
+            <div class="category-info">
+              <div class="category-name">
+                {{ node.langs[0].name }}
+                <span class="category-linker">{{ node.langs[0].linker }}</span>
+                <span class="product-count" [matBadge]="node.productsCount" matBadgeSize="small">
+                </span>
+              </div>
+              <div class="category-description" *ngIf="node.langs[0].description">
+                {{ node.langs[0].description }}
+              </div>
+            </div>
+          </div>
+        </li>
+      </mat-tree-node>
+    </mat-tree>
+  </div>
+</div>

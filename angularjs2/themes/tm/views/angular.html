@@ -1,0 +1,12 @@
+@{meta('companies:CompanyList','description', 'keywords')}
+
+<!-- /app/css/ -->
+@{ngStyle('/assets/admin/pages/css/tasks.css')}
+
+<!-- cdnjs -->
+@{ngResource(model.resources)} @{ngController(model.controllers)} @{section footer} @{end}
+
+<!-- BEGIN ACTUAL CONTENT -->
+<div ui-view class="fade-in-up">
+</div>
+<!-- END ACTUAL CONTENT -->

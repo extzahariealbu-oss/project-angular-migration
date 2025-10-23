@@ -1,0 +1,23 @@
+@if (totals) {
+  <mat-card class="totals-panel">
+    <mat-card-content>
+      <div class="total-summary">
+        <span class="label">Total Organizations:</span>
+        <span class="value">{{ totals.total }}</span>
+      </div>
+      
+      @if (statusKeys.length > 0) {
+        <div class="breakdown">
+          <span class="breakdown-label">Status Breakdown:</span>
+          <mat-chip-set>
+            @for (status of statusKeys; track status) {
+              <mat-chip [class]="'status-' + status.toLowerCase()">
+                {{ status }}: {{ getStatusCount(status) }}
+              </mat-chip>
+            }
+          </mat-chip-set>
+        </div>
+      }
+    </mat-card-content>
+  </mat-card>
+}

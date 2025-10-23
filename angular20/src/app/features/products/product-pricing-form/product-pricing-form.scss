@@ -1,0 +1,41 @@
+// Material-based Pricing Form Styles
+
+.pricing-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap: 1rem;
+  margin-bottom: 2rem;
+
+  @media (max-width: 768px) {
+    grid-template-columns: 1fr;
+  }
+}
+
+.quantity-pricing-section {
+  margin: 2rem 0 1rem 0;
+
+  h4 {
+    font-size: 1.25rem;
+    font-weight: 500;
+    margin-bottom: 0.5rem;
+  }
+
+  .section-description {
+    font-size: 0.875rem;
+    color: rgba(0, 0, 0, 0.6);
+    margin-bottom: 1rem;
+  }
+}
+
+.quantity-pricing-table {
+  margin-bottom: 2rem;
+
+  table {
+    width: 100%;
+    max-width: 600px;
+  }
+
+  .compact-field {
+    margin-bottom: -1.25em; // Reduce vertical spacing in table
+  }
+}

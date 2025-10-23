@@ -1,0 +1,234 @@
+<!-- Evidence: fiche.html:20-285 - Product detail page layout -->
+
+<!-- Error State -->
+<mat-card class="error-card" *ngIf="errorState() && !loading()">
+  <mat-card-content>
+    <div class="error-content">
+      <mat-icon color="warn">error</mat-icon>
+      <h2>{{ errorState() }}</h2>
+      <p>The product you're looking for could not be found.</p>
+      <button mat-raised-button color="primary" routerLink="/products">
+        <mat-icon>arrow_back</mat-icon>
+        Back to Products
+      </button>
+    </div>
+  </mat-card-content>
+</mat-card>
+
+<div class="page-content" *ngIf="product() as prod">
+  <!-- Header Toolbar -->
+  <mat-toolbar color="primary" class="page-toolbar">
+    <!-- Breadcrumb -->
+    <div class="breadcrumb-section">
+      <a routerLink="/dashboard" mat-button>
+        <mat-icon>home</mat-icon>
+        Home
+      </a>
+      <mat-icon>chevron_right</mat-icon>
+      <a routerLink="/products" mat-button>Products</a>
+      <mat-icon>chevron_right</mat-icon>
+      <span>{{ prod.info?.SKU || 'New Product' }}</span>
+      <span *ngIf="!prod.info?.isActive" class="disabled-label"> - Disabled</span>
+    </div>
+
+    <span class="spacer"></span>
+
+    <!-- Tools Section -->
+    <div class="toolbar-actions">
+      <!-- Language Selector -->
+      <button mat-button [matMenuTriggerFor]="langMenu" *ngIf="prod._id">
+        <mat-icon>language</mat-icon>
+        {{ languages[selectedLanguage()].name }}
+      </button>
+      <mat-menu #langMenu="matMenu">
+        <button mat-menu-item *ngFor="let lang of languages" (click)="setLanguage(lang.idx)">
+          {{ lang.name }}
+        </button>
+      </mat-menu>
+
+      <!-- Actions Dropdown -->
+      <button mat-button [matMenuTriggerFor]="actionsMenu" *ngIf="prod._id">
+        <mat-icon>settings</mat-icon>
+        Tools
+      </button>
+      <mat-menu #actionsMenu="matMenu">
+        <button mat-menu-item (click)="save()" *ngIf="prod.status === 'PREPARED'">
+          <mat-icon>check</mat-icon>
+          <span>Validate</span>
+        </button>
+        <button mat-menu-item (click)="clone()">
+          <mat-icon>content_copy</mat-icon>
+          <span>Clone</span>
+        </button>
+        <button mat-menu-item (click)="changeStatus('PUBLISHED')" *ngIf="prod.status === 'VALIDATED'">
+          <mat-icon>send</mat-icon>
+          <span>Publish</span>
+        </button>
+        <mat-divider></mat-divider>
+        <button mat-menu-item (click)="delete()" class="delete-action">
+          <mat-icon>delete</mat-icon>
+          <span>Delete</span>
+        </button>
+      </mat-menu>
+
+      <button mat-raised-button color="accent" (click)="save()" [disabled]="loading()">
+        <mat-icon>save</mat-icon>
+        Save
+      </button>
+      <button mat-button (click)="goBack()">
+        <mat-icon>arrow_back</mat-icon>
+        Back
+      </button>
+    </div>
+  </mat-toolbar>
+
+  <div class="content-layout">
+    <!-- Sidebar -->
+    <mat-card class="sidebar-card">
+      <!-- Status Ribbon -->
+      <div class="ribbon" [ngClass]="getStatusClass()" *ngIf="prod.status">
+        <span>{{ prod.status }}</span>
+      </div>
+
+      <!-- Product Image -->
+      <div class="product-image">
+        <img [src]="prod.imageSrc?.imageSrc ? '/erp/api/images/bank/s/' + prod.imageSrc?.imageSrc : 'data:image/svg+xml,%3Csvg xmlns=%22http://www.w3.org/2000/svg%22 width=%22200%22 height=%22200%22%3E%3Crect fill=%22%23ddd%22 width=%22200%22 height=%22200%22/%3E%3Ctext fill=%22%23999%22 font-size=%2218%22 x=%2250%25%22 y=%2250%25%22 text-anchor=%22middle%22 dy=%22.3em%22%3ENo Photo%3C/text%3E%3C/svg%3E'" 
+             alt="Product Image" />
+      </div>
+
+      <mat-card-content>
+        <!-- Product Name and SKU -->
+        <h3 class="product-name">{{ prod.info?.langs?.[selectedLanguage()]?.name || prod.info?.langs?.[0]?.name || 'Unnamed Product' }}</h3>
+        <div class="product-sku" [ngClass]="{'inactive': !prod.info?.isActive}">
+          {{ prod.info?.SKU || 'N/A' }}
+        </div>
+
+        <mat-divider></mat-divider>
+
+        <!-- Toggle Checkboxes -->
+        <div class="toggle-section">
+          <mat-checkbox [(ngModel)]="prod.info!.isActive">Active</mat-checkbox>
+          <mat-checkbox [(ngModel)]="prod.isSell">For Sale</mat-checkbox>
+          <mat-checkbox [(ngModel)]="prod.isBuy">For Purchase</mat-checkbox>
+        </div>
+
+        <mat-divider></mat-divider>
+
+        <!-- Rating Progress -->
+        <div class="rating-section" *ngIf="prod.rating">
+          <label>Completion Rating</label>
+          <mat-progress-bar 
+            mode="determinate" 
+            [value]="(prod.rating.total || 0) * 100"
+            color="accent">
+          </mat-progress-bar>
+          <span class="rating-value">{{ (prod.rating.total || 0) * 100 | number:'1.0-0' }}%</span>
+        </div>
+
+        <!-- Timestamps -->
+        <div class="timestamps" *ngIf="prod.createdAt">
+          <div class="timestamp-item">
+            <mat-icon>event</mat-icon>
+            <span>
+              {{ prod.createdAt | date:'dd/MM/yyyy HH:mm' }}
+              <small *ngIf="prod.createdBy">by {{ prod.createdBy.username }}</small>
+            </span>
+          </div>
+          <div class="timestamp-item" *ngIf="prod.updatedAt">
+            <mat-icon>update</mat-icon>
+            <span>
+              {{ prod.updatedAt | date:'dd/MM/yyyy HH:mm' }}
+              <small *ngIf="prod.editedBy">by {{ prod.editedBy.username }}</small>
+            </span>
+          </div>
+        </div>
+      </mat-card-content>
+    </mat-card>
+
+    <!-- Main Content with Tabs -->
+    <mat-card class="main-card">
+      <mat-tab-group [(selectedIndex)]="selectedTabIndex" (selectedIndexChange)="onTabChange($event)">
+        <!-- Info Tab -->
+        <mat-tab>
+          <ng-template mat-tab-label>
+            <mat-icon>info</mat-icon>
+            Information
+            <mat-icon *ngIf="prod.rating?.marketing !== 1" class="warning-icon">warning</mat-icon>
+          </ng-template>
+          <div class="tab-content">
+            <app-product-info-form [product]="prod" [languageIdx]="selectedLanguage()"></app-product-info-form>
+          </div>
+        </mat-tab>
+
+        <!-- Pricing Tab -->
+        <mat-tab>
+          <ng-template mat-tab-label>
+            <mat-icon>attach_money</mat-icon>
+            Price
+          </ng-template>
+          <div class="tab-content">
+            <app-product-pricing-form [product]="prod"></app-product-pricing-form>
+          </div>
+        </mat-tab>
+
+        <!-- Attributes Tab -->
+        <mat-tab>
+          <ng-template mat-tab-label>
+            <mat-icon>list</mat-icon>
+            Attributes
+            <mat-icon *ngIf="prod.rating?.attributes !== 1" class="warning-icon">warning</mat-icon>
+          </ng-template>
+          <div class="tab-content">
+            <app-product-attributes-tab [product]="prod" (save)="save()"></app-product-attributes-tab>
+          </div>
+        </mat-tab>
+
+        <!-- Images Tab -->
+        <mat-tab>
+          <ng-template mat-tab-label>
+            <mat-icon>image</mat-icon>
+            Images
+            <mat-icon *ngIf="prod.rating?.images !== 1" class="warning-icon">warning</mat-icon>
+          </ng-template>
+          <div class="tab-content">
+            <app-product-images-tab 
+              *ngIf="prod._id"
+              [productId]="prod._id" 
+              [productImages]="prod.productImages || []">
+            </app-product-images-tab>
+          </div>
+        </mat-tab>
+
+        <!-- Categories Tab -->
+        <mat-tab>
+          <ng-template mat-tab-label>
+            <mat-icon>category</mat-icon>
+            Categories
+          </ng-template>
+          <div class="tab-content">
+            <app-product-categories-tab [product]="prod"></app-product-categories-tab>
+          </div>
+        </mat-tab>
+
+        <!-- Bundles Tab (Conditional) -->
+        <mat-tab *ngIf="isBundleProduct(prod)">
+          <ng-template mat-tab-label>
+            <mat-icon>settings</mat-icon>
+            Bundle
+            <span *ngIf="prod.bundles && prod.bundles.length > 0" class="badge">{{ prod.bundles.length }}</span>
+          </ng-template>
+          <div class="tab-content">
+            <app-product-bundles-tab [product]="prod" (save)="save()"></app-product-bundles-tab>
+          </div>
+        </mat-tab>
+
+      </mat-tab-group>
+    </mat-card>
+  </div>
+</div>
+
+<!-- Loading State -->
+<div class="loading-state" *ngIf="loading()">
+  <mat-progress-bar mode="indeterminate"></mat-progress-bar>
+  <p>Loading...</p>
+</div>

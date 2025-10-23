@@ -1,0 +1,65 @@
+<!-- 
+  Login Form Template
+  Evidence: /angularjs2/themes/tm/views/login2.html:9-36
+  
+  Converted to Angular Material components
+-->
+
+<div class="login-container">
+  <mat-card class="login-card">
+    <mat-card-header>
+      <mat-card-title>Login</mat-card-title>
+    </mat-card-header>
+    
+    <mat-card-content>
+      @if (errorMessage()) {
+        <div class="error-message">
+          {{ errorMessage() }}
+        </div>
+      }
+
+      <form (ngSubmit)="onSubmit()">
+        <mat-form-field appearance="outline" class="full-width">
+          <mat-label>Username</mat-label>
+          <input 
+            matInput 
+            type="text" 
+            name="username"
+            [(ngModel)]="username"
+            [disabled]="isLoading()"
+            required
+          />
+        </mat-form-field>
+
+        <mat-form-field appearance="outline" class="full-width">
+          <mat-label>Password</mat-label>
+          <input 
+            matInput 
+            type="password" 
+            name="password"
+            [(ngModel)]="password"
+            [disabled]="isLoading()"
+            required
+          />
+        </mat-form-field>
+      </form>
+    </mat-card-content>
+    
+    <mat-card-actions>
+      <button 
+        mat-raised-button 
+        color="primary" 
+        type="submit"
+        (click)="onSubmit()"
+        [disabled]="isLoading()"
+        class="full-width"
+      >
+        @if (isLoading()) {
+          Logging in...
+        } @else {
+          Login
+        }
+      </button>
+    </mat-card-actions>
+  </mat-card>
+</div>
